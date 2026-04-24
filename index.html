@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBEREX — Quantum-Proof Cold Crypto Wallet</title>
+<meta name="description" content="CybeReX Cold Crypto Wallet — постквантовый криптокошелёк с ML-KEM-768 шифрованием. Quantum-proof защита от CybeReX.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   CSS VARIABLES — exact SVG palette
+   bg: #060608 → #080a10 → #0b1225 (radial)
+   gold: #E8C97A / #F0D98A / #9A7230
+═══════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold-1:#F0D98A;
+  --gold-2:#E8C97A;
+  --gold-3:#C9A84C;
+  --gold-4:#9A7230;
+  --gold-5:#6B4E1A;
+  --gold-glow:rgba(232,201,122,.14);
+  --gold-glow2:rgba(232,201,122,.06);
+  --bg-0:#060608;
+  --bg-1:#080a10;
+  --bg-2:#0b1225;
+  --bg-card:#0d1428;
+  --bg-card2:#111827;
+  --border:rgba(232,201,122,.18);
+  --border2:rgba(232,201,122,.08);
+  --text-body:#a09070;
+  --text-light:#d4c5a0;
+  --text-dim:#6a5e44;
+  --font-display:'Cinzel',serif;
+  --font-body:'Cormorant Garamond',serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:radial-gradient(ellipse at 50% 30%,var(--bg-0) 0%,var(--bg-1) 45%,var(--bg-2) 100%);
+  min-height:100vh;
+  color:var(--text-body);
+  font-family:var(--font-body);
+  font-size:18px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg-0)}
+::-webkit-scrollbar-thumb{background:var(--gold-4)}
+
+/* ── NOISE ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  opacity:.45;pointer-events:none;z-index:999;
+}
+
+/* ══════════════════════════════════════════════════════════
+   I18N — hide all lang blocks, show active
+═══════════════════════════════════════════════════════════ */
+[data-lang-block]{display:none}
+html[data-lang="ru"] [data-lang-block="ru"]{display:block}
+html[data-lang="en"] [data-lang-block="en"]{display:block}
+html[data-lang="ua"] [data-lang-block="ua"]{display:block}
+/* inline spans */
+[data-i]{display:none}
+html[data-lang="ru"] [data-i="ru"]{display:inline}
+html[data-lang="en"] [data-i="en"]{display:inline}
+html[data-lang="ua"] [data-i="ua"]{display:inline}
+
+/* ══════════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;
+  padding:18px 60px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom,rgba(6,6,8,.96),transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border2);
+  transition:background .4s;
+}
+nav.scrolled{background:rgba(6,6,8,.98)}
+.nav-logo{
+  font-family:var(--font-display);font-size:18px;font-weight:700;
+  letter-spacing:8px;color:var(--gold-2);text-decoration:none;
+  display:flex;align-items:center;gap:12px;
+}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:3px;
+  color:var(--gold-4);text-decoration:none;text-transform:uppercase;
+  transition:color .3s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;
+  background:var(--gold-2);transition:width .3s;
+}
+.nav-links a:hover{color:var(--gold-2)}
+.nav-links a:hover::after{width:100%}
+/* lang switcher */
+.lang-sw{display:flex;gap:6px}
+.lang-btn{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:2px;
+  padding:5px 10px;border:1px solid var(--border);
+  background:transparent;color:var(--gold-4);cursor:pointer;
+  transition:all .3s;text-transform:uppercase;
+}
+.lang-btn.active,.lang-btn:hover{
+  border-color:var(--gold-3);color:var(--gold-2);
+  background:var(--gold-glow);
+}
+.nav-cta{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;padding:10px 26px;
+  border:1px solid var(--gold-3);color:var(--gold-2);
+  text-decoration:none;background:transparent;
+  transition:all .3s;cursor:pointer;
+}
+.nav-cta:hover{background:var(--gold-glow);box-shadow:0 0 20px var(--gold-glow)}
+
+/* ══════════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding:120px 40px 80px;
+}
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(232,201,122,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(232,201,122,.025) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse at center,black 20%,transparent 70%);
+}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:920px}
+
+/* SVG shield — pixel-perfect from original */
+.hero-shield-wrap{
+  margin-bottom:44px;display:inline-block;position:relative;
+}
+.hero-shield-wrap::before{
+  content:'';position:absolute;inset:-40px;
+  background:radial-gradient(circle,rgba(232,201,122,.09) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-shield-svg{
+  width:110px;height:110px;
+  filter:drop-shadow(0 0 18px rgba(232,201,122,.28));
+  animation:shield-pulse 4s ease-in-out infinite;
+}
+@keyframes shield-pulse{
+  0%,100%{filter:drop-shadow(0 0 18px rgba(232,201,122,.28))}
+  50%{filter:drop-shadow(0 0 32px rgba(232,201,122,.5))}
+}
+.hero-eyebrow{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:6px;
+  color:var(--gold-4);text-transform:uppercase;margin-bottom:20px;
+  display:block;animation:fadeup .8s ease both .2s;
+}
+.hero-title{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(54px,9vw,108px);font-weight:400;
+  letter-spacing:20px;
+  background:linear-gradient(160deg,var(--gold-1) 0%,var(--gold-2) 45%,var(--gold-4) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.05;margin-bottom:14px;
+  animation:fadeup .8s ease both .35s;
+}
+.hero-slogan{
+  font-family:Georgia,serif;font-size:16px;letter-spacing:7px;
+  color:var(--gold-2);opacity:.7;margin-bottom:8px;font-style:normal;
+  animation:fadeup .8s ease both .45s;
+}
+.hero-powered{
+  font-family:Georgia,serif;font-size:12px;letter-spacing:5px;
+  color:var(--gold-4);opacity:.4;margin-bottom:36px;
+  animation:fadeup .8s ease both .5s;
+}
+.hero-desc{
+  font-family:var(--font-body);font-size:20px;line-height:1.85;
+  color:var(--text-body);max-width:720px;margin:0 auto 52px;
+  animation:fadeup .8s ease both .6s;
+}
+.hero-desc strong{color:var(--gold-2);font-weight:600}
+.hero-btns{
+  display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
+  animation:fadeup .8s ease both .75s;
+}
+.btn-primary{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;padding:17px 46px;
+  background:linear-gradient(135deg,var(--gold-4),var(--gold-3),var(--gold-4));
+  background-size:200% 200%;color:var(--bg-0);border:none;cursor:pointer;
+  text-decoration:none;display:inline-block;font-weight:700;
+  transition:all .4s;position:relative;overflow:hidden;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold-1),var(--gold-2));
+  opacity:0;transition:opacity .3s;
+}
+.btn-primary:hover::before{opacity:1}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,201,122,.28)}
+.btn-primary span{position:relative;z-index:1}
+.btn-outline{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;padding:17px 46px;
+  background:transparent;color:var(--gold-2);
+  border:1px solid var(--gold-3);cursor:pointer;
+  text-decoration:none;display:inline-block;transition:all .3s;
+}
+.btn-outline:hover{background:var(--gold-glow);box-shadow:0 0 22px var(--gold-glow)}
+
+/* gold divider — from SVG */
+.gold-line{
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(232,201,122,.8),transparent);
+  opacity:.5;margin:0;
+}
+
+/* stats */
+.hero-stats{
+  display:flex;justify-content:center;
+  margin-top:70px;
+  border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);
+  animation:fadeup .8s ease both 1s;
+}
+.hero-stat{
+  flex:1;max-width:210px;padding:28px 20px;text-align:center;
+  border-right:1px solid var(--border2);
+}
+.hero-stat:last-child{border-right:none}
+.hero-stat-n{
+  font-family:var(--font-display);font-size:34px;
+  color:var(--gold-2);display:block;line-height:1;margin-bottom:6px;
+}
+.hero-stat-l{
+  font-family:var(--font-mono);font-size:9px;
+  letter-spacing:3px;color:var(--gold-4);text-transform:uppercase;
+}
+
+@keyframes fadeup{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════════════════════ */
+.sec{padding:110px 40px;max-width:1200px;margin:0 auto}
+.sec-label{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:4px;
+  color:var(--gold-4);text-transform:uppercase;display:block;margin-bottom:14px;
+}
+h2.sec-title{
+  font-family:var(--font-display);
+  font-size:clamp(26px,4vw,48px);
+  background:linear-gradient(160deg,var(--gold-1),var(--gold-2) 60%,var(--gold-4));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:14px;line-height:1.15;
+}
+h3.sub-title{
+  font-family:var(--font-display);font-size:18px;letter-spacing:2px;
+  color:var(--gold-2);margin-bottom:12px;
+}
+.body-text{font-size:18px;line-height:1.9;color:var(--text-body);margin-bottom:18px}
+.body-text strong{color:var(--gold-2);font-weight:600}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}
+.rv.vis{opacity:1;transform:translateY(0)}
+
+/* ══════════════════════════════════════════════════════════
+   PRODUCT SECTION — 2 col
+═══════════════════════════════════════════════════════════ */
+.product-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:start;
+}
+.pq-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.pq-badge{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:2px;
+  border:1px solid var(--gold-4);color:var(--gold-3);
+  padding:5px 12px;background:rgba(232,201,122,.05);
+}
+/* quantum highlight box */
+.q-box{
+  background:linear-gradient(135deg,rgba(11,18,37,.9),rgba(13,20,40,.8));
+  border:1px solid var(--gold-4);border-left:3px solid var(--gold-2);
+  padding:28px 30px;margin:24px 0;
+}
+.q-box-title{
+  font-family:var(--font-display);font-size:14px;letter-spacing:3px;
+  color:var(--gold-2);margin-bottom:10px;text-transform:uppercase;
+}
+.q-box p{font-size:16px;color:var(--text-body);line-height:1.8}
+.q-box strong{color:var(--gold-1)}
+
+/* crypto layers table */
+.layers-table{width:100%;border-collapse:collapse;margin:28px 0}
+.layers-table th{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:3px;
+  color:var(--gold-4);text-transform:uppercase;
+  padding:12px 16px;border-bottom:1px solid var(--border);text-align:left;
+}
+.layers-table td{
+  padding:14px 16px;border-bottom:1px solid var(--border2);
+  font-size:15px;vertical-align:top;
+}
+.layers-table tr:last-child td{border-bottom:none}
+.layers-table .algo{font-family:var(--font-mono);color:var(--gold-3);font-size:13px}
+.layers-table .role{color:var(--gold-2);font-weight:600;font-size:14px}
+.layers-table .desc{color:var(--text-dim);font-size:14px}
+.layers-table tr:nth-child(odd) td{background:rgba(11,18,37,.4)}
+.layers-table tr:nth-child(even) td{background:rgba(13,20,40,.3)}
+
+/* vault use cases */
+.vault-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.vault-card{
+  background:var(--bg-card);border:1px solid var(--border2);
+  padding:20px;transition:border-color .3s;
+}
+.vault-card:hover{border-color:var(--gold-4)}
+.vault-card-icon{font-size:22px;margin-bottom:8px;display:block}
+.vault-card h4{
+  font-family:var(--font-display);font-size:13px;letter-spacing:2px;
+  color:var(--gold-2);margin-bottom:6px;
+}
+.vault-card p{font-size:13px;color:var(--text-dim);line-height:1.6}
+
+/* ══════════════════════════════════════════════════════════
+   FEATURES GRID
+═══════════════════════════════════════════════════════════ */
+.features-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2px;background:var(--border2);
+}
+.feat-card{
+  background:var(--bg-card);padding:42px 32px;
+  position:relative;overflow:hidden;transition:background .3s;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold-3),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.feat-card:hover{background:var(--bg-card2)}
+.feat-card:hover::before{opacity:1}
+.feat-icon{
+  width:44px;height:44px;margin-bottom:20px;color:var(--gold-3);
+}
+.feat-card h3{
+  font-family:var(--font-display);font-size:16px;letter-spacing:2px;
+  color:var(--gold-2);margin-bottom:12px;
+}
+.feat-card p{font-size:15px;line-height:1.75;color:var(--text-dim)}
+.feat-tag{
+  display:inline-block;margin-top:14px;
+  font-family:var(--font-mono);font-size:8px;letter-spacing:2px;
+  color:var(--gold-4);border:1px solid var(--border2);padding:3px 8px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   COMPARISON TABLE
+═══════════════════════════════════════════════════════════ */
+.cmp-wrap{overflow-x:auto}
+.cmp-table{
+  width:100%;border-collapse:collapse;min-width:760px;
+}
+.cmp-table th{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:3px;
+  color:var(--gold-4);text-transform:uppercase;
+  padding:16px 20px;border-bottom:2px solid var(--border);text-align:left;
+}
+.cmp-table th.cyberex-col{
+  color:var(--gold-2);border-bottom-color:var(--gold-3);
+  background:rgba(232,201,122,.04);
+}
+.cmp-table td{
+  padding:14px 20px;border-bottom:1px solid var(--border2);
+  font-size:15px;vertical-align:middle;
+}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table td:first-child{
+  font-family:var(--font-body);font-size:16px;color:var(--text-light);
+}
+.cmp-table .cyberex-col{background:rgba(232,201,122,.025)}
+.cmp-yes{color:#4ade80;font-size:17px}
+.cmp-no{color:#f87171;font-size:17px}
+.cmp-partial{color:var(--gold-3);font-size:13px}
+.cmp-cyberex-label{
+  font-family:var(--font-display);font-size:13px;letter-spacing:3px;
+  color:var(--gold-2);
+}
+
+/* ══════════════════════════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════════════════════════ */
+.steps{display:flex;flex-direction:column;gap:0;position:relative}
+.steps::before{
+  content:'';position:absolute;left:27px;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,var(--gold-4),transparent);opacity:.25;
+}
+.step{
+  display:grid;grid-template-columns:56px 1fr;gap:28px;
+  padding:36px 0;border-bottom:1px solid var(--border2);
+  transition:all .3s;
+}
+.step:last-child{border-bottom:none}
+.step:hover .step-body{transform:translateX(5px)}
+.step-n{
+  width:54px;height:54px;border:1px solid var(--gold-4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:17px;color:var(--gold-3);
+  flex-shrink:0;background:var(--bg-card);
+  transition:all .3s;align-self:flex-start;position:relative;z-index:1;
+}
+.step:hover .step-n{border-color:var(--gold-2);background:var(--gold-glow);color:var(--gold-1)}
+.step-body{transition:transform .3s;padding-top:10px}
+.step-body h3{
+  font-family:var(--font-display);font-size:18px;letter-spacing:2px;
+  color:var(--gold-2);margin-bottom:8px;
+}
+.step-body p{font-size:16px;color:var(--text-dim);line-height:1.8}
+
+/* ══════════════════════════════════════════════════════════
+   SPECS
+═══════════════════════════════════════════════════════════ */
+.specs-bg{
+  background:rgba(11,18,37,.5);
+  border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);
+}
+.specs-inner{max-width:1100px;margin:0 auto;padding:110px 40px}
+.specs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--border2)}
+.spec-group{background:var(--bg-card2);padding:38px}
+.spec-group-title{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:4px;
+  color:var(--gold-4);text-transform:uppercase;
+  margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--border2);
+}
+.spec-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid rgba(232,201,122,.04);gap:16px;
+}
+.spec-row:last-child{border-bottom:none}
+.spec-label{font-family:var(--font-mono);font-size:11px;color:var(--gold-4);flex-shrink:0}
+.spec-value{font-family:var(--font-body);font-size:14px;color:var(--text-light);text-align:right}
+.spec-badge{
+  display:inline-block;
+  background:rgba(232,201,122,.07);border:1px solid var(--gold-5);
+  color:var(--gold-3);font-family:var(--font-mono);font-size:8px;
+  letter-spacing:1px;padding:2px 7px;margin-left:5px;vertical-align:middle;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PRICING
+═══════════════════════════════════════════════════════════ */
+.price-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2px;background:var(--border2);max-width:1000px;margin:0 auto;
+}
+.price-card{
+  background:var(--bg-card);padding:48px 32px;position:relative;transition:background .3s;
+}
+.price-card.featured{
+  background:rgba(11,18,37,.9);
+  outline:1px solid var(--gold-3);outline-offset:-1px;z-index:1;
+}
+.price-card.featured::before{
+  content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:8px;letter-spacing:3px;
+  background:var(--gold-3);color:var(--bg-0);padding:4px 14px;font-weight:700;
+  white-space:nowrap;
+}
+/* different label per lang */
+html[data-lang="ru"] .price-card.featured::before{content:'ПОПУЛЯРНЫЙ'}
+html[data-lang="en"] .price-card.featured::before{content:'POPULAR'}
+html[data-lang="ua"] .price-card.featured::before{content:'ПОПУЛЯРНИЙ'}
+.price-tier{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:4px;
+  color:var(--gold-4);text-transform:uppercase;margin-bottom:18px;display:block;
+}
+.price-amt{
+  font-family:var(--font-display);font-size:50px;color:var(--gold-2);
+  line-height:1;margin-bottom:6px;
+}
+.price-amt sup{font-size:20px;vertical-align:super;color:var(--gold-4)}
+.price-curr{
+  font-family:var(--font-mono);font-size:10px;color:var(--gold-4);
+  letter-spacing:2px;margin-bottom:28px;display:block;
+}
+.price-feats{list-style:none;margin-bottom:32px}
+.price-feats li{
+  font-size:14px;color:var(--text-dim);padding:7px 0;
+  border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;gap:8px;
+}
+.price-feats li:last-child{border-bottom:none}
+.price-feats li::before{content:'—';color:var(--gold-4);font-family:var(--font-mono);font-size:11px;flex-shrink:0}
+.price-feats li.hi{color:var(--gold-2)}
+
+/* ══════════════════════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════════════════════ */
+.faq-item{border-bottom:1px solid var(--border2)}
+.faq-q{
+  width:100%;background:none;border:none;padding:26px 0;
+  text-align:left;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+}
+.faq-qt{font-family:var(--font-body);font-size:19px;color:var(--gold-2)}
+.faq-ico{width:22px;height:22px;flex-shrink:0;color:var(--gold-4);transition:transform .3s}
+.faq-item.open .faq-ico{transform:rotate(45deg)}
+.faq-ans{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-ans-in{padding:0 0 26px;font-size:17px;color:var(--text-body);line-height:1.85}
+.faq-ans-in strong{color:var(--gold-2)}
+
+/* ══════════════════════════════════════════════════════════
+   ORDER FORM
+═══════════════════════════════════════════════════════════ */
+.order-wrap{max-width:860px;margin:0 auto}
+.order-form{
+  background:var(--bg-card);border:1px solid var(--border2);padding:56px;
+  position:relative;
+}
+.order-form::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold-3),transparent);
+}
+.form-sec{margin-bottom:44px}
+.form-sec-title{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:4px;
+  color:var(--gold-4);text-transform:uppercase;
+  margin-bottom:22px;padding-bottom:11px;border-bottom:1px solid var(--border2);
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-row.s1{grid-template-columns:1fr}
+.form-row.s3{grid-template-columns:1fr 1fr 1fr}
+.form-g{display:flex;flex-direction:column;gap:7px}
+.form-label{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--gold-4);text-transform:uppercase}
+.form-input,.form-select,.form-textarea{
+  background:rgba(11,18,37,.9);border:1px solid var(--border);
+  color:var(--text-light);padding:13px 16px;
+  font-family:var(--font-body);font-size:16px;outline:none;
+  transition:border-color .3s,box-shadow .3s;appearance:none;
+}
+.form-input::placeholder{color:var(--text-dim)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--gold-3);
+  box-shadow:0 0 0 1px var(--gold-3),inset 0 0 10px var(--gold-glow2);
+}
+.form-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A7230' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;
+  padding-right:42px;cursor:pointer;
+}
+.form-select option{background:var(--bg-card2);color:var(--text-light)}
+.form-textarea{resize:vertical;min-height:110px}
+.cfg-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cfg-opt{position:relative}
+.cfg-opt input{position:absolute;opacity:0;width:0;height:0}
+.cfg-opt label{
+  display:block;padding:14px 16px;background:rgba(11,18,37,.9);
+  border:1px solid var(--border);cursor:pointer;transition:all .3s;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:1px;
+  color:var(--text-dim);text-align:center;line-height:1.5;
+}
+.cfg-opt label:hover{border-color:var(--gold-4);color:var(--gold-4)}
+.cfg-opt input:checked+label{background:var(--gold-glow);border-color:var(--gold-3);color:var(--gold-2)}
+.del-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.del-opt{position:relative}
+.del-opt input{position:absolute;opacity:0;width:0;height:0}
+.del-opt label{
+  display:flex;flex-direction:column;padding:18px 22px;
+  background:rgba(11,18,37,.9);border:1px solid var(--border);
+  cursor:pointer;transition:all .3s;
+}
+.del-opt label:hover{border-color:var(--gold-4)}
+.del-opt input:checked+label{background:var(--gold-glow);border-color:var(--gold-3)}
+.del-name{font-family:var(--font-display);font-size:14px;color:var(--gold-2);margin-bottom:3px}
+.del-desc{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:1px}
+.terms-row{display:flex;align-items:flex-start;gap:12px}
+.terms-cb{
+  flex-shrink:0;width:19px;height:19px;border:1px solid var(--gold-4);
+  background:rgba(11,18,37,.9);appearance:none;cursor:pointer;
+  position:relative;margin-top:3px;
+}
+.terms-cb:checked{background:var(--gold-4)}
+.terms-cb:checked::after{
+  content:'✓';position:absolute;inset:0;display:flex;
+  align-items:center;justify-content:center;color:var(--bg-0);font-size:12px;font-weight:700;
+}
+.terms-text{font-size:14px;color:var(--text-dim);line-height:1.6}
+.form-submit{margin-top:36px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.btn-submit{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  padding:18px 52px;background:linear-gradient(135deg,var(--gold-4),var(--gold-3),var(--gold-4));
+  background-size:200% 200%;color:var(--bg-0);border:none;cursor:pointer;font-weight:700;
+  transition:all .4s;position:relative;overflow:hidden;
+}
+.btn-submit::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-1),var(--gold-2));opacity:0;transition:opacity .3s}
+.btn-submit:hover::before{opacity:1}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(232,201,122,.28)}
+.btn-submit span{position:relative;z-index:1}
+.form-note{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);line-height:1.7}
+.form-success{display:none;text-align:center;padding:56px 36px}
+.form-success.vis{display:block}
+.succ-icon{
+  width:76px;height:76px;border:1px solid var(--gold-3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 28px;font-size:28px;color:var(--gold-2);
+}
+.succ-title{font-family:var(--font-display);font-size:26px;color:var(--gold-2);margin-bottom:14px}
+.succ-text{font-size:17px;color:var(--text-body);max-width:460px;margin:0 auto;line-height:1.8}
+
+/* ══════════════════════════════════════════════════════════
+   CONTACTS
+═══════════════════════════════════════════════════════════ */
+.contacts-sec{
+  padding:90px 40px;text-align:center;
+  border-top:1px solid var(--border2);
+  background:linear-gradient(0deg,var(--bg-2) 0%,transparent 100%);
+}
+.contact-cards{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-bottom:60px}
+.contact-card{
+  background:var(--bg-card);border:1px solid var(--border2);padding:36px 44px;
+  min-width:240px;transition:all .3s;text-decoration:none;display:block;
+  position:relative;overflow:hidden;
+}
+.contact-card::before{
+  content:'';position:absolute;inset:0;background:var(--gold-glow2);opacity:0;transition:opacity .3s;
+}
+.contact-card:hover{border-color:var(--gold-3)}
+.contact-card:hover::before{opacity:1}
+.cc-icon{
+  width:48px;height:48px;border:1px solid var(--gold-5);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;color:var(--gold-3);
+}
+.cc-type{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:4px;
+  color:var(--gold-4);text-transform:uppercase;margin-bottom:8px;display:block;
+}
+.cc-val{font-family:var(--font-body);font-size:17px;color:var(--gold-2)}
+
+/* ══════════════════════════════════════════════════════════
+   OPENSOURCE CREDITS
+═══════════════════════════════════════════════════════════ */
+.credits{
+  padding:60px 40px;max-width:900px;margin:0 auto;text-align:center;
+  border-top:1px solid var(--border2);
+}
+.credits-title{
+  font-family:var(--font-display);font-size:16px;letter-spacing:4px;
+  color:var(--gold-4);margin-bottom:20px;text-transform:uppercase;
+}
+.credits-text{font-size:15px;color:var(--text-dim);line-height:1.9}
+.credits-text strong{color:var(--gold-3)}
+.credits-list{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px;
+}
+.credits-item{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:2px;
+  border:1px solid var(--border2);color:var(--gold-5);padding:5px 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════ */
+footer{
+  padding:40px 60px;border-top:1px solid var(--border2);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+}
+.footer-brand{font-family:Georgia,serif;font-size:15px;letter-spacing:8px;color:var(--gold-4)}
+.footer-copy{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-dim)}
+.footer-links{display:flex;gap:28px;list-style:none}
+.footer-links a{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .3s}
+.footer-links a:hover{color:var(--gold-4)}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .product-grid{grid-template-columns:1fr;gap:50px}
+  .features-grid{grid-template-columns:1fr}
+  .specs-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr}
+  .cfg-opts{grid-template-columns:1fr 1fr}
+  .order-form{padding:36px 22px}
+  .form-row{grid-template-columns:1fr}
+  .form-row.s3{grid-template-columns:1fr}
+  .del-opts{grid-template-columns:1fr}
+  .hero-stats{flex-wrap:wrap}
+  .hero-stat{min-width:130px;border:none;border-bottom:1px solid var(--border2)}
+  footer{flex-direction:column;text-align:center;padding:36px 20px}
+  .vault-cards{grid-template-columns:1fr}
+  .cmp-table th,.cmp-table td{padding:10px 12px;font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════════ -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">
+    <!-- Original SVG shield -->
+    <svg width="26" height="26" viewBox="0 0 58 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ng" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#E8C97A"/>
+          <stop offset="45%" stop-color="#F0D98A"/>
+          <stop offset="100%" stop-color="#9A7230"/>
+        </linearGradient>
+        <linearGradient id="ngk" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F0D98A"/>
+          <stop offset="40%" stop-color="#E8C97A"/>
+          <stop offset="100%" stop-color="#9A7230"/>
+        </linearGradient>
+        <linearGradient id="ngs" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#181818"/>
+          <stop offset="100%" stop-color="#0C0C0C"/>
+        </linearGradient>
+      </defs>
+      <path d="M29 2 L54 11 L54 34 Q54 54 29 64 Q4 54 4 34 L4 11 Z" fill="url(#ngs)" stroke="url(#ng)" stroke-width="1.2"/>
+      <path d="M29 8 L48 16 L48 34 Q48 50 29 58 Q10 50 10 34 L10 16 Z" fill="none" stroke="url(#ng)" stroke-width="0.4" opacity="0.4"/>
+      <path d="M18 32 L18 23 Q18 14 29 14 Q40 14 40 23 L40 32" fill="none" stroke="url(#ngk)" stroke-width="3.5" stroke-linecap="round"/>
+      <rect x="13" y="31" width="32" height="24" rx="4" fill="none" stroke="url(#ngk)" stroke-width="2.5"/>
+      <circle cx="29" cy="41" r="5" fill="none" stroke="url(#ngk)" stroke-width="1.8"/>
+      <line x1="29" y1="46" x2="29" y2="52" stroke="url(#ngk)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    CYBEREX
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#product"><span data-i="ru">Продукт</span><span data-i="en">Product</span><span data-i="ua">Продукт</span></a></li>
+    <li><a href="#features"><span data-i="ru">Защита</span><span data-i="en">Security</span><span data-i="ua">Захист</span></a></li>
+    <li><a href="#compare"><span data-i="ru">Сравнение</span><span data-i="en">Compare</span><span data-i="ua">Порівняння</span></a></li>
+    <li><a href="#specs"><span data-i="ru">Спецификации</span><span data-i="en">Specs</span><span data-i="ua">Специфікації</span></a></li>
+    <li><a href="#pricing"><span data-i="ru">Цены</span><span data-i="en">Pricing</span><span data-i="ua">Ціни</span></a></li>
+    <li><a href="#order"><span data-i="ru">Заказать</span><span data-i="en">Order</span><span data-i="ua">Замовити</span></a></li>
+  </ul>
+
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="lang-sw">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ua')">UA</button>
+    </div>
+    <a href="#order" class="nav-cta">
+      <span data-i="ru">Заказать</span><span data-i="en">Order</span><span data-i="ua">Замовити</span>
+    </a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-content">
+
+    <div class="hero-shield-wrap">
+      <!-- Original shield from SVG, scaled -->
+      <svg class="hero-shield-svg" viewBox="0 0 116 166" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#E8C97A"/>
+            <stop offset="45%" stop-color="#F0D98A"/>
+            <stop offset="100%" stop-color="#9A7230"/>
+          </linearGradient>
+          <linearGradient id="hgk" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0D98A"/>
+            <stop offset="40%" stop-color="#E8C97A"/>
+            <stop offset="100%" stop-color="#9A7230"/>
+          </linearGradient>
+          <linearGradient id="hgs" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#181818"/>
+            <stop offset="100%" stop-color="#0C0C0C"/>
+          </linearGradient>
+          <filter id="hglow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#hglow)">
+          <path d="M58 4 L110 22 L110 80 Q110 136 58 162 Q6 136 6 80 L6 22 Z" fill="url(#hgs)" stroke="url(#hg)" stroke-width="1.8"/>
+          <path d="M58 14 L98 30 L98 80 Q98 124 58 148 Q18 124 18 80 L18 30 Z" fill="none" stroke="url(#hg)" stroke-width="0.6" opacity="0.4"/>
+          <path d="M34 76 L34 54 Q34 32 58 32 Q82 32 82 54 L82 76" fill="none" stroke="url(#hgk)" stroke-width="6" stroke-linecap="round"/>
+          <rect x="24" y="74" width="68" height="56" rx="7" fill="none" stroke="url(#hgk)" stroke-width="4"/>
+          <circle cx="58" cy="100" r="10" fill="none" stroke="url(#hgk)" stroke-width="3"/>
+          <line x1="58" y1="110" x2="58" y2="122" stroke="url(#hgk)" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <span class="hero-eyebrow">
+      <span data-i="ru">Quantum-Proof Cold Crypto Wallet · ML-KEM-768 · Open Source</span>
+      <span data-i="en">Quantum-Proof Cold Crypto Wallet · ML-KEM-768 · Open Source</span>
+      <span data-i="ua">Quantum-Proof Cold Crypto Wallet · ML-KEM-768 · Open Source</span>
+    </span>
+
+    <!-- Title exactly as SVG -->
+    <h1 class="hero-title">CYBEREX</h1>
+
+    <p class="hero-slogan">YOUR KEYS. YOUR CRYPTO. YOUR RULES.</p>
+    <p class="hero-powered">POWERED BY TAILS OS · OPEN SOURCE · COLD STORAGE</p>
+
+    <!-- divider — from SVG -->
+    <div class="gold-line" style="margin:16px 0 32px"></div>
+
+    <p class="hero-desc">
+      <span data-i="ru">
+        <strong>CybeReX Cold Crypto Wallet</strong> — первый в мире аппаратный криптокошелёк
+        с <strong>постквантовым шифрованием ML-KEM-768</strong>, стандартизированным NIST в 2024 году.
+        Ваши данные защищены от взлома не только сегодняшними компьютерами,
+        но и <strong>будущими квантовыми машинами</strong>.
+        Внутри — собственное приложение <strong>PQVault by CybeReX</strong> и только Open Source ПО.
+      </span>
+      <span data-i="en">
+        <strong>CybeReX Cold Crypto Wallet</strong> — the world's first hardware crypto wallet
+        featuring <strong>post-quantum encryption ML-KEM-768</strong>, standardized by NIST in 2024.
+        Your data is protected not only from today's computers,
+        but also from <strong>future quantum machines</strong>.
+        Powered by proprietary <strong>PQVault by CybeReX</strong> and 100% Open Source software.
+      </span>
+      <span data-i="ua">
+        <strong>CybeReX Cold Crypto Wallet</strong> — перший у світі апаратний криптогаманець
+        з <strong>пост-квантовим шифруванням ML-KEM-768</strong>, стандартизованим NIST у 2024 році.
+        Ваші дані захищені не лише від сучасних комп'ютерів,
+        але й від <strong>майбутніх квантових машин</strong>.
+        Власний додаток <strong>PQVault by CybeReX</strong> та лише Open Source ПЗ.
+      </span>
+    </p>
+
+    <div class="hero-btns">
+      <a href="#order" class="btn-primary">
+        <span data-i="ru"><span>Заказать сейчас</span></span>
+        <span data-i="en"><span>Order Now</span></span>
+        <span data-i="ua"><span>Замовити зараз</span></span>
+      </a>
+      <a href="PQVault_Manual.docx" class="btn-outline" download>
+        <span data-i="ru">↓ Инструкция PQVault</span>
+        <span data-i="en">↓ PQVault Manual</span>
+        <span data-i="ua">↓ Інструкція PQVault</span>
+      </a>
+      <a href="#product" class="btn-outline">
+        <span data-i="ru">Подробнее</span>
+        <span data-i="en">Learn More</span>
+        <span data-i="ua">Детальніше</span>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-n">ML-KEM</span>
+        <span class="hero-stat-l">768 · NIST PQC</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-n">AES</span>
+        <span class="hero-stat-l">256-GCM</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-n">0</span>
+        <span class="hero-stat-l"><span data-i="ru">следов в ОС</span><span data-i="en">OS traces</span><span data-i="ua">слідів в ОС</span></span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-n">100%</span>
+        <span class="hero-stat-l">Open Source</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PRODUCT
+═══════════════════════════════════════════════════════════ -->
+<section id="product" class="sec">
+  <div class="product-grid rv">
+
+    <div>
+      <span class="sec-label"><span data-i="ru">Продукт</span><span data-i="en">Product</span><span data-i="ua">Продукт</span></span>
+      <h2 class="sec-title">
+        <span data-i="ru">Quantum-Proof<br>защита нового поколения</span>
+        <span data-i="en">Quantum-Proof<br>Next-Generation Security</span>
+        <span data-i="ua">Quantum-Proof<br>захист нового покоління</span>
+      </h2>
+
+      <div class="pq-badge-row">
+        <span class="pq-badge">ML-KEM-768</span>
+        <span class="pq-badge">AES-256-GCM</span>
+        <span class="pq-badge">Argon2id KDF</span>
+        <span class="pq-badge">NIST PQC 2024</span>
+        <span class="pq-badge">QUANTUM-PROOF</span>
+      </div>
+
+      <p class="body-text">
+        <span data-i="ru">
+          <strong>CybeReX</strong> — это не просто загрузочная флешка. Это полноценный
+          <strong>квантово-защищённый холодный кошелёк</strong> с собственным приложением
+          <strong>PQVault by CybeReX</strong>, которое применяет трёхуровневую криптосхему,
+          разработанную специально для противодействия квантовым вычислениям.
+        </span>
+        <span data-i="en">
+          <strong>CybeReX</strong> is not just a bootable USB. It is a full
+          <strong>quantum-proof cold wallet</strong> with proprietary
+          <strong>PQVault by CybeReX</strong> application — a three-layer cryptographic scheme
+          designed specifically to resist quantum computing attacks.
+        </span>
+        <span data-i="ua">
+          <strong>CybeReX</strong> — це не просто завантажувальна флешка. Це повноцінний
+          <strong>квантово-захищений холодний гаманець</strong> з власним додатком
+          <strong>PQVault by CybeReX</strong>, який застосовує трирівневу криптосхему,
+          розроблену спеціально для протидії квантовим обчисленням.
+        </span>
+      </p>
+
+      <!-- PQVault quantum box -->
+      <div class="q-box">
+        <div class="q-box-title">PQVault by CybeReX — Quantum-Proof Vault</div>
+        <p>
+          <span data-i="ru">
+            Алгоритм <strong>ML-KEM-768</strong> (Kyber) — стандарт NIST PQC 2024.
+            Даже полноценный квантовый компьютер <strong>не сможет взломать</strong> зашифрованное хранилище.
+            Ключ никогда не записывается на диск — только в RAM, и очищается при выключении.
+          </span>
+          <span data-i="en">
+            <strong>ML-KEM-768</strong> (Kyber) — NIST PQC 2024 standard.
+            Even a fully operational quantum computer <strong>cannot break</strong> the encrypted vault.
+            The key is never written to disk — RAM only, wiped on shutdown.
+          </span>
+          <span data-i="ua">
+            Алгоритм <strong>ML-KEM-768</strong> (Kyber) — стандарт NIST PQC 2024.
+            Навіть повноцінний квантовий комп'ютер <strong>не зможе зламати</strong> зашифроване сховище.
+            Ключ ніколи не записується на диск — лише в RAM, очищується при вимкненні.
+          </span>
+        </p>
+      </div>
+
+      <!-- 3-layer table -->
+      <table class="layers-table">
+        <tr>
+          <th><span data-i="ru">Слой</span><span data-i="en">Layer</span><span data-i="ua">Шар</span></th>
+          <th><span data-i="ru">Алгоритм</span><span data-i="en">Algorithm</span><span data-i="ua">Алгоритм</span></th>
+          <th><span data-i="ru">Роль</span><span data-i="en">Role</span><span data-i="ua">Роль</span></th>
+        </tr>
+        <tr>
+          <td class="algo">Argon2id</td>
+          <td class="role"><span data-i="ru">KDF пароля</span><span data-i="en">Password KDF</span><span data-i="ua">KDF пароля</span></td>
+          <td class="desc"><span data-i="ru">128 МБ RAM, 4 итерации. Брутфорс невозможен.</span><span data-i="en">128 MB RAM, 4 iterations. Brute-force impossible.</span><span data-i="ua">128 МБ RAM, 4 ітерації. Брутфорс неможливий.</span></td>
+        </tr>
+        <tr>
+          <td class="algo">ML-KEM-768</td>
+          <td class="role"><span data-i="ru">Post-Quantum KEM</span><span data-i="en">Post-Quantum KEM</span><span data-i="ua">Post-Quantum KEM</span></td>
+          <td class="desc"><span data-i="ru">NIST PQC 2024. Quantum-proof инкапсуляция ключа.</span><span data-i="en">NIST PQC 2024. Quantum-proof key encapsulation.</span><span data-i="ua">NIST PQC 2024. Quantum-proof інкапсуляція ключа.</span></td>
+        </tr>
+        <tr>
+          <td class="algo">AES-256-GCM</td>
+          <td class="role"><span data-i="ru">Симметричный шифр</span><span data-i="en">Symmetric Cipher</span><span data-i="ua">Симетричний шифр</span></td>
+          <td class="desc"><span data-i="ru">Аутентифицированное шифрование всего содержимого. Любое вмешательство обнаруживается.</span><span data-i="en">Authenticated encryption of all content. Any tampering detected.</span><span data-i="ua">Аутентифіковане шифрування всього вмісту. Будь-яке втручання виявляється.</span></td>
+        </tr>
+      </table>
+
+      <!-- PQVault download button -->
+      <a href="PQVault_Manual.docx" download class="btn-outline" style="display:inline-block;margin-top:24px;font-size:10px">
+        <span data-i="ru">↓ Скачать инструкцию PQVault (DOCX)</span>
+        <span data-i="en">↓ Download PQVault Manual (DOCX)</span>
+        <span data-i="ua">↓ Завантажити інструкцію PQVault (DOCX)</span>
+      </a>
+    </div>
+
+    <!-- RIGHT: vault use cases -->
+    <div>
+      <span class="sec-label"><span data-i="ru">Что хранить</span><span data-i="en">What to store</span><span data-i="ua">Що зберігати</span></span>
+      <h2 class="sec-title" style="font-size:clamp(22px,3vw,36px)">
+        <span data-i="ru">Хранилище для<br>любых данных</span>
+        <span data-i="en">Vault for<br>any data</span>
+        <span data-i="ua">Сховище для<br>будь-яких даних</span>
+      </h2>
+
+      <p class="body-text">
+        <span data-i="ru">
+          PQVault — это универсальное зашифрованное хранилище.
+          Внутри можно хранить <strong>любые файлы и папки</strong>:
+          без пароля, защищённого ML-KEM-768, не откроет <strong>никто и ничем</strong>
+          — при соблюдении базовой цифровой гигиены.
+        </span>
+        <span data-i="en">
+          PQVault is a universal encrypted storage.
+          Store <strong>any files and folders</strong> inside:
+          without the ML-KEM-768-protected password, <strong>no one and nothing</strong> can open it
+          — provided basic digital hygiene is maintained.
+        </span>
+        <span data-i="ua">
+          PQVault — це універсальне зашифроване сховище.
+          Всередині можна зберігати <strong>будь-які файли та папки</strong>:
+          без пароля, захищеного ML-KEM-768, не відкриє <strong>ніхто і нічим</strong>
+          — при дотриманні базової цифрової гігієни.
+        </span>
+      </p>
+
+      <div class="vault-cards">
+        <div class="vault-card">
+          <span class="vault-card-icon">₿</span>
+          <h4><span data-i="ru">Крипто-ключи</span><span data-i="en">Crypto keys</span><span data-i="ua">Крипто-ключі</span></h4>
+          <p><span data-i="ru">Seed-фразы, приватные ключи, адреса кошельков BTC, ETH, XMR, SOL</span><span data-i="en">Seed phrases, private keys, wallet addresses BTC, ETH, XMR, SOL</span><span data-i="ua">Seed-фрази, приватні ключі, адреси гаманців BTC, ETH, XMR, SOL</span></p>
+        </div>
+        <div class="vault-card">
+          <span class="vault-card-icon">🗂</span>
+          <h4><span data-i="ru">Документы</span><span data-i="en">Documents</span><span data-i="ua">Документи</span></h4>
+          <p><span data-i="ru">Паспорта, контракты, юридические документы, корпоративные секреты</span><span data-i="en">Passports, contracts, legal docs, corporate secrets</span><span data-i="ua">Паспорти, контракти, юридичні документи, корпоративні секрети</span></p>
+        </div>
+        <div class="vault-card">
+          <span class="vault-card-icon">🔑</span>
+          <h4><span data-i="ru">Пароли и доступы</span><span data-i="en">Passwords & access</span><span data-i="ua">Паролі та доступи</span></h4>
+          <p><span data-i="ru">KeePassXC базы, SSH-ключи, API-токены, 2FA backup-коды</span><span data-i="en">KeePassXC databases, SSH keys, API tokens, 2FA backup codes</span><span data-i="ua">KeePassXC бази, SSH-ключі, API-токени, 2FA backup-коди</span></p>
+        </div>
+        <div class="vault-card">
+          <span class="vault-card-icon">📁</span>
+          <h4><span data-i="ru">Любые файлы</span><span data-i="en">Any files</span><span data-i="ua">Будь-які файли</span></h4>
+          <p><span data-i="ru">Фото, видео, архивы, переписки, бизнес-данные, медиа — всё что угодно</span><span data-i="en">Photos, video, archives, chats, business data, media — anything</span><span data-i="ua">Фото, відео, архіви, переписки, бізнес-дані, медіа — будь-що</span></p>
+        </div>
+      </div>
+
+      <div class="q-box" style="margin-top:24px;border-left-color:var(--gold-4)">
+        <div class="q-box-title" style="font-size:12px">
+          <span data-i="ru">Несколько независимых хранилищ</span>
+          <span data-i="en">Multiple Independent Vaults</span>
+          <span data-i="ua">Кілька незалежних сховищ</span>
+        </div>
+        <p>
+          <span data-i="ru">PQVault поддерживает неограниченное количество хранилищ — у каждого свой пароль, свой ключ шифрования, своё содержимое. Например: отдельное хранилище для крипты, для документов, для работы.</span>
+          <span data-i="en">PQVault supports unlimited vaults — each with its own password, encryption key, and content. Example: separate vault for crypto, for documents, for work.</span>
+          <span data-i="ua">PQVault підтримує необмежену кількість сховищ — у кожного свій пароль, свій ключ шифрування, свій вміст. Наприклад: окреме сховище для крипти, для документів, для роботи.</span>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════════════════════ -->
+<section id="features" style="padding:110px 0">
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px">
+
+    <div style="text-align:center;margin-bottom:70px" class="rv">
+      <span class="sec-label"><span data-i="ru">Защита</span><span data-i="en">Security</span><span data-i="ua">Захист</span></span>
+      <h2 class="sec-title">
+        <span data-i="ru">Семь уровней защиты</span>
+        <span data-i="en">Seven Layers of Security</span>
+        <span data-i="ua">Сім рівнів захисту</span>
+      </h2>
+      <p class="body-text" style="max-width:580px;margin:0 auto">
+        <span data-i="ru">Все программы — исключительно Open Source. Никаких закрытых компонентов, никаких бэкдоров.</span>
+        <span data-i="en">All software is exclusively Open Source. No closed components, no backdoors.</span>
+        <span data-i="ua">Все програми — виключно Open Source. Жодних закритих компонентів, жодних бекдорів.</span>
+      </p>
+    </div>
+
+    <div class="features-grid rv">
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/></svg>
+        <h3>PQVault · ML-KEM-768</h3>
+        <p><span data-i="ru">Собственное приложение CybeReX с постквантовым шифрованием. Quantum-proof: не взламывается ни сейчас, ни после появления квантовых компьютеров.</span><span data-i="en">Proprietary CybeReX application with post-quantum encryption. Quantum-proof: unbreakable now and after quantum computers arrive.</span><span data-i="ua">Власний додаток CybeReX з пост-квантовим шифруванням. Quantum-proof: не зламується ні зараз, ні після появи квантових комп'ютерів.</span></p>
+        <span class="feat-tag">NIST PQC 2024</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-4.2-7.8-2.1 2.1M6.3 17.7l-2.1 2.1m0-13.6 2.1 2.1m11.4 11.4 2.1 2.1"/></svg>
+        <h3><span data-i="ru">Полная амнезия</span><span data-i="en">Total Amnesia</span><span data-i="ua">Повна амнезія</span></h3>
+        <p><span data-i="ru">Tails OS не оставляет следов на компьютере-хосте. При извлечении флешки вся информация исчезает из RAM автоматически.</span><span data-i="en">Tails OS leaves no traces on the host computer. When removed, all data vanishes from RAM automatically.</span><span data-i="ua">Tails OS не залишає слідів на комп'ютері-хості. При вийманні флешки вся інформація зникає з RAM автоматично.</span></p>
+        <span class="feat-tag">TAILS OS</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <h3><span data-i="ru">AppArmor + Firejail</span><span data-i="en">AppArmor + Firejail</span><span data-i="ua">AppArmor + Firejail</span></h3>
+        <p><span data-i="ru">Каждое приложение изолировано в sandbox. Компрометация одного не затрагивает остальные данные и кошельки.</span><span data-i="en">Each application isolated in sandbox. Compromising one does not affect other data or wallets.</span><span data-i="ua">Кожен додаток ізольований у sandbox. Компрометація одного не зачіпає інші дані та гаманці.</span></p>
+        <span class="feat-tag">SANDBOX</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <h3>Electrum + Stack Wallet</h3>
+        <p><span data-i="ru">Bitcoin (Electrum) и мультивалютный Stack Wallet предустановлены. Работают через Tor, поддерживают offline подпись транзакций.</span><span data-i="en">Bitcoin (Electrum) and multi-currency Stack Wallet pre-installed. Run via Tor, support offline transaction signing.</span><span data-i="ua">Bitcoin (Electrum) та мультивалютний Stack Wallet передвстановлені. Працюють через Tor, підтримують offline підпис транзакцій.</span></p>
+        <span class="feat-tag">BTC · ETH · XMR · SOL</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        <h3>Tor Network</h3>
+        <p><span data-i="ru">Весь трафик маршрутизируется через Tor. Ваш IP и активность полностью анонимны при любых транзакциях и коммуникациях.</span><span data-i="en">All traffic routed through Tor. Your IP and activity are completely anonymous for all transactions and communications.</span><span data-i="ua">Весь трафік маршрутизується через Tor. Ваш IP та активність повністю анонімні при будь-яких транзакціях.</span></p>
+        <span class="feat-tag">TOR ROUTING</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>
+        <h3><span data-i="ru">RAM Wipe + Persistent</span><span data-i="en">RAM Wipe + Persistent</span><span data-i="ua">RAM Wipe + Persistent</span></h3>
+        <p><span data-i="ru">Автоматическая очистка RAM при выключении. Зашифрованный Persistent раздел (LUKS2) сохраняет данные между сессиями.</span><span data-i="en">Automatic RAM wipe on shutdown. Encrypted Persistent partition (LUKS2) preserves data between sessions.</span><span data-i="ua">Автоматичне очищення RAM при вимкненні. Зашифрований Persistent розділ (LUKS2) зберігає дані між сесіями.</span></p>
+        <span class="feat-tag">LUKS2 · AES-256-GCM</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+        <h3>USBGuard + UFW</h3>
+        <p><span data-i="ru">Блокировка нежелательных USB-устройств и файрвол с жёсткими правилами. Защита от физических атак и BadUSB.</span><span data-i="en">Blocking unwanted USB devices and strict firewall rules. Protection from physical attacks and BadUSB.</span><span data-i="ua">Блокування небажаних USB-пристроїв та файрвол з жорсткими правилами. Захист від фізичних атак та BadUSB.</span></p>
+        <span class="feat-tag">FIREWALL</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
+        <h3><span data-i="ru">Self-Destruct (опц.)</span><span data-i="en">Self-Destruct (opt.)</span><span data-i="ua">Self-Destruct (опц.)</span></h3>
+        <p><span data-i="ru">Настраиваемый счётчик неудачных попыток входа. После превышения лимита — автоматическое уничтожение данных Persistent раздела.</span><span data-i="en">Configurable failed login counter. After limit exceeded — automatic destruction of Persistent partition data.</span><span data-i="ua">Настроюваний лічильник невдалих спроб входу. Після перевищення ліміту — автоматичне знищення даних Persistent розділу.</span></p>
+        <span class="feat-tag">OPTIONAL</span>
+      </div>
+
+      <div class="feat-card">
+        <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9,12 11,14 15,10"/></svg>
+        <h3><span data-i="ru">YubiKey поддержка</span><span data-i="en">YubiKey Support</span><span data-i="ua">YubiKey підтримка</span></h3>
+        <p><span data-i="ru">Трёхфакторная аутентификация: пароль + ключ-файл + YubiKey (HMAC-SHA1). Максимальный уровень защиты от несанкционированного доступа.</span><span data-i="en">Three-factor authentication: password + key file + YubiKey (HMAC-SHA1). Maximum protection against unauthorized access.</span><span data-i="ua">Трифакторна аутентифікація: пароль + ключ-файл + YubiKey (HMAC-SHA1). Максимальний рівень захисту.</span></p>
+        <span class="feat-tag">3FA · OPTIONAL</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     COMPARISON TABLE
+═══════════════════════════════════════════════════════════ -->
+<section id="compare" class="sec rv">
+  <div style="text-align:center;margin-bottom:60px">
+    <span class="sec-label"><span data-i="ru">Сравнение</span><span data-i="en">Comparison</span><span data-i="ua">Порівняння</span></span>
+    <h2 class="sec-title">
+      <span data-i="ru">CybeReX против остальных</span>
+      <span data-i="en">CybeReX vs. the rest</span>
+      <span data-i="ua">CybeReX проти решти</span>
+    </h2>
+    <p class="body-text" style="max-width:560px;margin:0 auto">
+      <span data-i="ru">Только CybeReX предлагает quantum-proof защиту с ML-KEM-768 и полностью Open Source стек.</span>
+      <span data-i="en">Only CybeReX offers quantum-proof protection with ML-KEM-768 and a fully Open Source stack.</span>
+      <span data-i="ua">Лише CybeReX пропонує quantum-proof захист з ML-KEM-768 та повністю Open Source стек.</span>
+    </p>
+  </div>
+
+  <div class="cmp-wrap">
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th><span data-i="ru">Характеристика</span><span data-i="en">Feature</span><span data-i="ua">Характеристика</span></th>
+          <th class="cyberex-col"><span class="cmp-cyberex-label">CybeReX</span></th>
+          <th>Ledger</th>
+          <th>Trezor</th>
+          <th>Coldcard</th>
+          <th>BitBox02</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><span data-i="ru">Постквантовое шифрование</span><span data-i="en">Post-Quantum Encryption</span><span data-i="ua">Пост-квантове шифрування</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> ML-KEM-768</td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">100% Open Source</span><span data-i="en">100% Open Source</span><span data-i="ua">100% Open Source</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span></td>
+          <td><span class="cmp-partial">Частично</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">Хранилище любых файлов</span><span data-i="en">Universal file vault</span><span data-i="ua">Сховище будь-яких файлів</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> PQVault</td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">Работает на любом ПК</span><span data-i="en">Runs on any PC</span><span data-i="ua">Працює на будь-якому ПК</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">Анонимность (Tor)</span><span data-i="en">Anonymity (Tor)</span><span data-i="ua">Анонімність (Tor)</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> Tor Built-in</td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">0 следов на хосте</span><span data-i="en">0 host traces</span><span data-i="ua">0 слідів на хості</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> Tails OS</td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">Мультивалютность</span><span data-i="en">Multi-currency</span><span data-i="ua">Мультивалютність</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> BTC·ETH·XMR·SOL…</td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-partial">BTC only</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">Изоляция приложений</span><span data-i="en">App isolation</span><span data-i="ua">Ізоляція додатків</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> AppArmor+Firejail</td>
+          <td><span class="cmp-partial">SE</span></td>
+          <td><span class="cmp-partial">SE</span></td>
+          <td><span class="cmp-partial">SE</span></td>
+          <td><span class="cmp-partial">SE</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">Offline подпись</span><span data-i="en">Offline signing</span><span data-i="ua">Offline підпис</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span> Air-gap</td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+          <td><span class="cmp-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">RAM-очистка при выкл.</span><span data-i="en">RAM wipe on shutdown</span><span data-i="ua">RAM-очищення при вимк.</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+        <tr>
+          <td><strong><span data-i="ru">YubiKey 3FA</span><span data-i="en">YubiKey 3FA</span><span data-i="ua">YubiKey 3FA</span></strong></td>
+          <td class="cyberex-col"><span class="cmp-yes">✦</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+          <td><span class="cmp-no">✗</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="text-align:center;margin-top:18px;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px">
+    <span data-i="ru">✦ — эксклюзивное преимущество CybeReX · SE — Secure Element изоляция</span>
+    <span data-i="en">✦ — exclusive CybeReX advantage · SE — Secure Element isolation</span>
+    <span data-i="ua">✦ — ексклюзивна перевага CybeReX · SE — Secure Element ізоляція</span>
+  </p>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════════════════════ -->
+<section class="sec rv" style="max-width:860px">
+  <div style="text-align:center;margin-bottom:60px">
+    <span class="sec-label"><span data-i="ru">Как это работает</span><span data-i="en">How it works</span><span data-i="ua">Як це працює</span></span>
+    <h2 class="sec-title">
+      <span data-i="ru">Четыре шага к абсолютной защите</span>
+      <span data-i="en">Four steps to absolute security</span>
+      <span data-i="ua">Чотири кроки до абсолютного захисту</span>
+    </h2>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">01</div>
+      <div class="step-body">
+        <h3><span data-i="ru">Загрузитесь с флешки</span><span data-i="en">Boot from USB</span><span data-i="ua">Завантажтесь з флешки</span></h3>
+        <p><span data-i="ru">Подключите CybeReX к любому ПК и выберите загрузку с USB. Tails OS запускается полностью в RAM — хост не затронут, следов нет.</span><span data-i="en">Connect CybeReX to any PC and select USB boot. Tails OS runs entirely in RAM — host untouched, no traces.</span><span data-i="ua">Підключіть CybeReX до будь-якого ПК та виберіть завантаження з USB. Tails OS запускається повністю в RAM — хост не зачеплений, слідів немає.</span></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <div class="step-body">
+        <h3><span data-i="ru">Разблокируйте Persistent Storage</span><span data-i="en">Unlock Persistent Storage</span><span data-i="ua">Розблокуйте Persistent Storage</span></h3>
+        <p><span data-i="ru">Введите пароль — зашифрованный LUKS2 раздел открывается. Tor автоматически устанавливает соединение. Все кошельки и данные на месте.</span><span data-i="en">Enter your password — LUKS2-encrypted partition opens. Tor automatically connects. All wallets and data in place.</span><span data-i="ua">Введіть пароль — зашифрований LUKS2 розділ відкривається. Tor автоматично встановлює з'єднання. Всі гаманці та дані на місці.</span></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <div class="step-body">
+        <h3><span data-i="ru">Откройте PQVault</span><span data-i="en">Open PQVault</span><span data-i="ua">Відкрийте PQVault</span></h3>
+        <p><span data-i="ru">Запустите PQVault by CybeReX — quantum-proof хранилище с ML-KEM-768 + AES-256-GCM. Добавляйте, управляйте и защищайте любые файлы. Несколько независимых хранилищ с разными паролями.</span><span data-i="en">Launch PQVault by CybeReX — quantum-proof vault with ML-KEM-768 + AES-256-GCM. Add, manage and secure any files. Multiple independent vaults with different passwords.</span><span data-i="ua">Запустіть PQVault by CybeReX — quantum-proof сховище з ML-KEM-768 + AES-256-GCM. Додавайте, керуйте та захищайте будь-які файли.</span></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">04</div>
+      <div class="step-body">
+        <h3><span data-i="ru">Завершение — без следов</span><span data-i="en">Shutdown — no traces</span><span data-i="ua">Завершення — без слідів</span></h3>
+        <p><span data-i="ru">Выключите ПК или извлеките флешку. RAM автоматически очищается. Компьютер-хост не содержит ни байта информации о вашей активности.</span><span data-i="en">Turn off PC or remove USB. RAM is automatically wiped. The host computer contains zero bytes of information about your activity.</span><span data-i="ua">Вимкніть ПК або вийміть флешку. RAM автоматично очищується. Комп'ютер-хост не містить жодного байту інформації про вашу активність.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SPECS
+═══════════════════════════════════════════════════════════ -->
+<section id="specs" class="specs-bg">
+  <div class="specs-inner">
+    <div style="text-align:center;margin-bottom:60px" class="rv">
+      <h2 class="sec-title"><span data-i="ru">Спецификации безопасности</span><span data-i="en">Security Specifications</span><span data-i="ua">Специфікації безпеки</span></h2>
+    </div>
+
+    <div class="specs-grid rv">
+      <div class="spec-group">
+        <div class="spec-group-title"><span data-i="ru">Криптография PQVault</span><span data-i="en">PQVault Cryptography</span><span data-i="ua">Криптографія PQVault</span></div>
+        <div class="spec-row"><span class="spec-label">Post-Quantum KEM</span><span class="spec-value">ML-KEM-768 (Kyber) <span class="spec-badge">NIST 2024</span></span></div>
+        <div class="spec-row"><span class="spec-label">Symmetric cipher</span><span class="spec-value">AES-256-GCM <span class="spec-badge">AUTH</span></span></div>
+        <div class="spec-row"><span class="spec-label">Password KDF</span><span class="spec-value">Argon2id · 128MB RAM · 4 iter</span></div>
+        <div class="spec-row"><span class="spec-label">Auth modes</span><span class="spec-value"><span data-i="ru">Пароль / +Keyfile / +YubiKey</span><span data-i="en">Password / +Keyfile / +YubiKey</span><span data-i="ua">Пароль / +Keyfile / +YubiKey</span></span></div>
+        <div class="spec-row"><span class="spec-label">Key storage</span><span class="spec-value">RAM only · wiped on lock</span></div>
+        <div class="spec-row"><span class="spec-label">Timestamps</span><span class="spec-value"><span data-i="ru">Обнуляются (mtime=0)</span><span data-i="en">Stripped (mtime=0)</span><span data-i="ua">Обнуляються (mtime=0)</span></span></div>
+      </div>
+
+      <div class="spec-group">
+        <div class="spec-group-title"><span data-i="ru">Программная платформа</span><span data-i="en">Software Platform</span><span data-i="ua">Програмна платформа</span></div>
+        <div class="spec-row"><span class="spec-label">OS</span><span class="spec-value">Tails OS · Debian Bookworm <span class="spec-badge">LATEST</span></span></div>
+        <div class="spec-row"><span class="spec-label">Kernel</span><span class="spec-value">Linux 6.x Hardened</span></div>
+        <div class="spec-row"><span class="spec-label">Anonymity</span><span class="spec-value">Tor Network (all traffic)</span></div>
+        <div class="spec-row"><span class="spec-label">Persistent</span><span class="spec-value">LUKS2 · AES-256-GCM</span></div>
+        <div class="spec-row"><span class="spec-label">RAM Wipe</span><span class="spec-value"><span data-i="ru">Авт. при выключении</span><span data-i="en">Auto on shutdown</span><span data-i="ua">Авт. при вимкненні</span></span></div>
+        <div class="spec-row"><span class="spec-label">Isolation</span><span class="spec-value">AppArmor + Firejail</span></div>
+      </div>
+
+      <div class="spec-group">
+        <div class="spec-group-title"><span data-i="ru">Предустановленный Open Source ПО</span><span data-i="en">Pre-installed Open Source SW</span><span data-i="ua">Передвстановлений Open Source ПЗ</span></div>
+        <div class="spec-row"><span class="spec-label">PQVault</span><span class="spec-value">by CybeReX <span class="spec-badge">QUANTUM-PROOF</span></span></div>
+        <div class="spec-row"><span class="spec-label">BTC Wallet</span><span class="spec-value">Electrum (offline sign)</span></div>
+        <div class="spec-row"><span class="spec-label">Multi-Wallet</span><span class="spec-value">Stack Wallet · ETH·XMR·SOL…</span></div>
+        <div class="spec-row"><span class="spec-label">Password Mgr</span><span class="spec-value">KeePassXC</span></div>
+        <div class="spec-row"><span class="spec-label">Firewall</span><span class="spec-value">UFW + USBGuard</span></div>
+        <div class="spec-row"><span class="spec-label">liboqs</span><span class="spec-value">Open Quantum Safe · ML-KEM</span></div>
+      </div>
+
+      <div class="spec-group">
+        <div class="spec-group-title"><span data-i="ru">Совместимость</span><span data-i="en">Compatibility</span><span data-i="ua">Сумісність</span></div>
+        <div class="spec-row"><span class="spec-label">Hardware</span><span class="spec-value">Any PC Intel/AMD 2012+</span></div>
+        <div class="spec-row"><span class="spec-label">Boot</span><span class="spec-value">UEFI + Legacy BIOS</span></div>
+        <div class="spec-row"><span class="spec-label">Interface</span><span class="spec-value">USB-C (adapter incl.)</span></div>
+        <div class="spec-row"><span class="spec-label">RAM req.</span><span class="spec-value">min 4 GB (8 GB recommended)</span></div>
+        <div class="spec-row"><span class="spec-label">Entropy</span><span class="spec-value">/dev/urandom · Hardware RNG</span></div>
+        <div class="spec-row"><span class="spec-label">Air-gap</span><span class="spec-value"><span data-i="ru">Offline подпись транзакций</span><span data-i="en">Offline transaction signing</span><span data-i="ua">Offline підпис транзакцій</span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PRICING
+═══════════════════════════════════════════════════════════ -->
+<section id="pricing" class="sec" style="text-align:center">
+  <div style="margin-bottom:60px" class="rv">
+    <span class="sec-label"><span data-i="ru">Стоимость</span><span data-i="en">Pricing</span><span data-i="ua">Вартість</span></span>
+    <h2 class="sec-title">
+      <span data-i="ru">Выберите конфигурацию</span>
+      <span data-i="en">Choose your configuration</span>
+      <span data-i="ua">Оберіть конфігурацію</span>
+    </h2>
+    <p class="body-text" style="max-width:500px;margin:0 auto">
+      <span data-i="ru">Доставка по всей Украине и международная отправка.</span>
+      <span data-i="en">Delivery across Ukraine and worldwide.</span>
+      <span data-i="ua">Доставка по всій Україні та міжнародне відправлення.</span>
+    </p>
+  </div>
+
+  <div class="price-grid rv">
+    <div class="price-card">
+      <span class="price-tier">Standard</span>
+      <div class="price-amt"><sup>$</sup>79</div>
+      <span class="price-curr">USD · <span data-i="ru">от</span><span data-i="en">from</span><span data-i="ua">від</span></span>
+      <ul class="price-feats">
+        <li>Tails OS (<span data-i="ru">посл. версия</span><span data-i="en">latest</span><span data-i="ua">остання версія</span>)</li>
+        <li>PQVault by CybeReX</li>
+        <li>ML-KEM-768 + AES-256-GCM</li>
+        <li>Electrum + Stack Wallet</li>
+        <li>Tor Network</li>
+        <li>LUKS2 Persistent Storage</li>
+        <li>AppArmor + Firejail</li>
+        <li><span data-i="ru">Инструкция на 3 языках</span><span data-i="en">Manual in 3 languages</span><span data-i="ua">Інструкція 3 мовами</span></li>
+      </ul>
+      <a href="#order" class="btn-outline" style="display:block;text-align:center;font-size:10px">
+        <span data-i="ru">Заказать</span><span data-i="en">Order</span><span data-i="ua">Замовити</span>
+      </a>
+    </div>
+
+    <div class="price-card featured">
+      <span class="price-tier">Professional</span>
+      <div class="price-amt"><sup>$</sup>149</div>
+      <span class="price-curr">USD · <span data-i="ru">от</span><span data-i="en">from</span><span data-i="ua">від</span></span>
+      <ul class="price-feats">
+        <li class="hi"><span data-i="ru">Всё из Standard</span><span data-i="en">Everything in Standard</span><span data-i="ua">Все з Standard</span></li>
+        <li>RAM Wipe <span data-i="ru">сервис</span><span data-i="en">service</span><span data-i="ua">сервіс</span></li>
+        <li>Self-Destruct <span data-i="ru">счётчик</span><span data-i="en">counter</span><span data-i="ua">лічильник</span></li>
+        <li>USBGuard <span data-i="ru">конфигурация</span><span data-i="en">configuration</span><span data-i="ua">конфігурація</span></li>
+        <li>UFW <span data-i="ru">жёсткий файрвол</span><span data-i="en">strict firewall</span><span data-i="ua">жорсткий файрвол</span></li>
+        <li>KeePassXC</li>
+        <li class="hi"><span data-i="ru">Настройка под ваши нужды</span><span data-i="en">Custom configuration</span><span data-i="ua">Налаштування під вас</span></li>
+      </ul>
+      <a href="#order" class="btn-primary" style="display:block;text-align:center;font-size:10px"><span><span data-i="ru">Заказать</span><span data-i="en">Order</span><span data-i="ua">Замовити</span></span></a>
+    </div>
+
+    <div class="price-card">
+      <span class="price-tier">Elite</span>
+      <div class="price-amt" style="font-size:36px">
+        <span data-i="ru">Индивид.</span><span data-i="en">Custom</span><span data-i="ua">Індивід.</span>
+      </div>
+      <span class="price-curr"><span data-i="ru">По договорённости</span><span data-i="en">On request</span><span data-i="ua">За домовленістю</span></span>
+      <ul class="price-feats">
+        <li class="hi"><span data-i="ru">Всё из Professional</span><span data-i="en">Everything in Professional</span><span data-i="ua">Все з Professional</span></li>
+        <li>YubiKey 3FA</li>
+        <li><span data-i="ru">Дополнительные кошельки</span><span data-i="en">Additional wallets</span><span data-i="ua">Додаткові гаманці</span></li>
+        <li><span data-i="ru">Кастомный брендинг</span><span data-i="en">Custom branding</span><span data-i="ua">Кастомний брендинг</span></li>
+        <li><span data-i="ru">Дополнительные OPSEC-инструменты</span><span data-i="en">Additional OPSEC tools</span><span data-i="ua">Додаткові OPSEC-інструменти</span></li>
+        <li class="hi"><span data-i="ru">Любые кастомизации</span><span data-i="en">Any customization</span><span data-i="ua">Будь-які кастомізації</span></li>
+      </ul>
+      <a href="#order" class="btn-outline" style="display:block;text-align:center;font-size:10px">
+        <span data-i="ru">Связаться</span><span data-i="en">Contact</span><span data-i="ua">Зв'язатись</span>
+      </a>
+    </div>
+  </div>
+
+  <p style="margin-top:24px;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px">
+    <span data-i="ru">Цены указаны от — итоговая стоимость зависит от конфигурации и региона доставки</span>
+    <span data-i="en">Prices from — final cost depends on configuration and delivery region</span>
+    <span data-i="ua">Ціни від — підсумкова вартість залежить від конфігурації та регіону доставки</span>
+  </p>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     FAQ
+═══════════════════════════════════════════════════════════ -->
+<section class="sec" style="max-width:800px">
+  <div style="text-align:center;margin-bottom:54px" class="rv">
+    <span class="sec-label">FAQ</span>
+    <h2 class="sec-title">
+      <span data-i="ru">Частые вопросы</span>
+      <span data-i="en">Frequently Asked Questions</span>
+      <span data-i="ua">Часті запитання</span>
+    </h2>
+  </div>
+
+  <div class="rv">
+    <div class="faq-item">
+      <button class="faq-q" onclick="faqToggle(this)">
+        <span class="faq-qt"><span data-i="ru">Что такое ML-KEM-768 и почему это важно?</span><span data-i="en">What is ML-KEM-768 and why does it matter?</span><span data-i="ua">Що таке ML-KEM-768 і чому це важливо?</span></span>
+        <svg class="faq-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="faq-ans"><div class="faq-ans-in">
+        <span data-i="ru">ML-KEM-768 (Kyber) — это <strong>постквантовый алгоритм инкапсуляции ключа</strong>, стандартизированный NIST в 2024 году. Все существующие криптокошельки используют RSA или ECDSA — алгоритмы, которые квантовый компьютер взломает за минуты. ML-KEM-768 устойчив к атакам квантовых компьютеров математически. CybeReX — единственный холодный кошелёк с этой защитой.</span>
+        <span data-i="en">ML-KEM-768 (Kyber) is a <strong>post-quantum key encapsulation algorithm</strong> standardized by NIST in 2024. All existing crypto wallets use RSA or ECDSA — algorithms a quantum computer will break in minutes. ML-KEM-768 is mathematically resistant to quantum computer attacks. CybeReX is the only cold wallet with this protection.</span>
+        <span data-i="ua">ML-KEM-768 (Kyber) — це <strong>пост-квантовий алгоритм інкапсуляції ключа</strong>, стандартизований NIST у 2024 році. Всі існуючі криптогаманці використовують RSA або ECDSA — алгоритми, які квантовий комп'ютер зламає за хвилини. ML-KEM-768 стійкий до атак квантових комп'ютерів математично.</span>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="faqToggle(this)">
+        <span class="faq-qt"><span data-i="ru">Безопасно ли доверять устройство стороннему человеку?</span><span data-i="en">Is it safe to get the device from a third party?</span><span data-i="ua">Чи безпечно довіряти пристрій сторонній людині?</span></span>
+        <svg class="faq-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="faq-ans"><div class="faq-ans-in">
+        <span data-i="ru">Да. Persistent Storage шифруется <strong>вашим персональным паролем после получения</strong>. Настройку PQVault вы выполняете самостоятельно по инструкции. Seed-фразы и ключи никогда не покидают ваш контроль. Всё ПО — Open Source, код открыт для проверки.</span>
+        <span data-i="en">Yes. Persistent Storage is encrypted with <strong>your personal password after receipt</strong>. PQVault setup you do yourself following the manual. Seed phrases and keys never leave your control. All software is Open Source, code is open for audit.</span>
+        <span data-i="ua">Так. Persistent Storage шифрується <strong>вашим особистим паролем після отримання</strong>. Налаштування PQVault ви виконуєте самостійно за інструкцією. Seed-фрази та ключі ніколи не залишають ваш контроль. Все ПЗ — Open Source.</span>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="faqToggle(this)">
+        <span class="faq-qt"><span data-i="ru">Что можно хранить в PQVault кроме крипто?</span><span data-i="en">What can I store in PQVault besides crypto?</span><span data-i="ua">Що можна зберігати у PQVault крім крипти?</span></span>
+        <svg class="faq-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="faq-ans"><div class="faq-ans-in">
+        <span data-i="ru">Абсолютно любые файлы и папки: документы, фото, видео, пароли, SSH-ключи, юридические бумаги, бизнес-данные, переписки. Всё хранится в зашифрованном виде. <strong>Без пароля — не откроет никто и ничем</strong> при соблюдении базовой цифровой гигиены.</span>
+        <span data-i="en">Absolutely any files and folders: documents, photos, video, passwords, SSH keys, legal papers, business data, messages. Everything stored encrypted. <strong>Without the password — no one and nothing can open it</strong> with basic digital hygiene.</span>
+        <span data-i="ua">Абсолютно будь-які файли та папки: документи, фото, відео, паролі, SSH-ключі, юридичні папери, бізнес-дані, переписки. Все зберігається в зашифрованому вигляді. <strong>Без пароля — не відкриє ніхто і нічим</strong> при дотриманні базової цифрової гігієни.</span>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="faqToggle(this)">
+        <span class="faq-qt"><span data-i="ru">На каких компьютерах работает?</span><span data-i="en">Which computers does it work on?</span><span data-i="ua">На яких комп'ютерах працює?</span></span>
+        <svg class="faq-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="faq-ans"><div class="faq-ans-in">
+        <span data-i="ru">На большинстве ПК и ноутбуков с процессором Intel/AMD 2012 года и позже. Поддерживаются UEFI и Legacy BIOS. Mac на M1/M2 не поддерживается. Для загрузки нужно выбрать USB в boot menu (F12 при старте).</span>
+        <span data-i="en">On most PCs and laptops with Intel/AMD processors from 2012+. UEFI and Legacy BIOS supported. Mac M1/M2 not supported. Select USB in boot menu (F12 at startup).</span>
+        <span data-i="ua">На більшості ПК та ноутбуків з процесором Intel/AMD 2012 року та пізніше. UEFI та Legacy BIOS підтримуються. Mac на M1/M2 не підтримується.</span>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="faqToggle(this)">
+        <span class="faq-qt"><span data-i="ru">Что если флешка потеряется?</span><span data-i="en">What if the USB is lost?</span><span data-i="ua">Що якщо флешка загубиться?</span></span>
+        <svg class="faq-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="faq-ans"><div class="faq-ans-in">
+        <span data-i="ru">Флешка — только загрузочный носитель. Ваши активы защищены seed-фразой (храните отдельно). Данные Persistent шифруются LUKS2 + AES-256-GCM, PQVault — ML-KEM-768. <strong>Без пароля злоумышленник ничего не получит</strong>. При потере изготовлю замену со скидкой.</span>
+        <span data-i="en">The USB is only a boot medium. Your assets are protected by seed phrase (store separately). Persistent data encrypted with LUKS2 + AES-256-GCM, PQVault with ML-KEM-768. <strong>Without the password an attacker gets nothing</strong>. If lost, I'll make a replacement at a discount.</span>
+        <span data-i="ua">Флешка — лише завантажувальний носій. Ваші активи захищені seed-фразою (зберігайте окремо). Дані Persistent шифруються LUKS2 + AES-256-GCM, PQVault — ML-KEM-768. <strong>Без пароля зловмисник нічого не отримає</strong>.</span>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="faqToggle(this)">
+        <span class="faq-qt"><span data-i="ru">Какие криптовалюты поддерживаются?</span><span data-i="en">Which cryptocurrencies are supported?</span><span data-i="ua">Які криптовалюти підтримуються?</span></span>
+        <svg class="faq-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="faq-ans"><div class="faq-ans-in">
+        <span data-i="ru"><strong>Bitcoin</strong> (Electrum), <strong>Ethereum, Monero, Litecoin, Bitcoin Cash, Nano, Stellar, Solana</strong> и другие — через Stack Wallet. По запросу добавляю любой Open Source кошелёк.</span>
+        <span data-i="en"><strong>Bitcoin</strong> (Electrum), <strong>Ethereum, Monero, Litecoin, Bitcoin Cash, Nano, Stellar, Solana</strong> and more — via Stack Wallet. On request I add any Open Source wallet.</span>
+        <span data-i="ua"><strong>Bitcoin</strong> (Electrum), <strong>Ethereum, Monero, Litecoin, Bitcoin Cash, Nano, Stellar, Solana</strong> та інші — через Stack Wallet. На запит додаю будь-який Open Source гаманець.</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     ORDER FORM
+═══════════════════════════════════════════════════════════ -->
+<section id="order" class="sec">
+  <div class="order-wrap">
+    <div style="text-align:center;margin-bottom:54px" class="rv">
+      <span class="sec-label"><span data-i="ru">Заказать</span><span data-i="en">Order</span><span data-i="ua">Замовити</span></span>
+      <h2 class="sec-title">
+        <span data-i="ru">Заказать CybeReX</span>
+        <span data-i="en">Order CybeReX</span>
+        <span data-i="ua">Замовити CybeReX</span>
+      </h2>
+      <p class="body-text">
+        <span data-i="ru">Заполните форму — свяжусь в течение 24 часов</span>
+        <span data-i="en">Fill the form — I'll contact you within 24 hours</span>
+        <span data-i="ua">Заповніть форму — зв'яжусь протягом 24 годин</span>
+      </p>
+    </div>
+
+    <div class="order-form rv">
+      <div id="ff">
+
+        <!-- Contact -->
+        <div class="form-sec">
+          <div class="form-sec-title"><span data-i="ru">Контактные данные</span><span data-i="en">Contact Details</span><span data-i="ua">Контактні дані</span></div>
+          <div class="form-row" style="margin-bottom:18px">
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Имя *</span><span data-i="en">Name *</span><span data-i="ua">Ім'я *</span></label>
+              <input type="text" id="fname" class="form-input" placeholder="..." required>
+            </div>
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Фамилия</span><span data-i="en">Last name</span><span data-i="ua">Прізвище</span></label>
+              <input type="text" id="lname" class="form-input" placeholder="...">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:18px">
+            <div class="form-g">
+              <label class="form-label">Email *</label>
+              <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+            </div>
+            <div class="form-g">
+              <label class="form-label">Telegram</label>
+              <input type="text" id="tg" class="form-input" placeholder="@username">
+            </div>
+          </div>
+          <div class="form-row s1">
+            <div class="form-g">
+              <label class="form-label">WhatsApp / <span data-i="ru">Телефон</span><span data-i="en">Phone</span><span data-i="ua">Телефон</span></label>
+              <input type="tel" id="phone" class="form-input" placeholder="——————">
+            </div>
+          </div>
+        </div>
+
+        <!-- Config -->
+        <div class="form-sec">
+          <div class="form-sec-title"><span data-i="ru">Конфигурация</span><span data-i="en">Configuration</span><span data-i="ua">Конфігурація</span></div>
+          <div class="form-g" style="margin-bottom:18px">
+            <label class="form-label"><span data-i="ru">Комплектация *</span><span data-i="en">Package *</span><span data-i="ua">Комплектація *</span></label>
+            <select id="pkg" class="form-select" required>
+              <option value="" disabled selected>—</option>
+              <option value="standard"><span data-i="ru">Standard</span><span data-i="en">Standard</span><span data-i="ua">Standard</span> — $79</option>
+              <option value="professional">Professional — $149 (<span data-i="ru">рекомендуется</span><span data-i="en">recommended</span><span data-i="ua">рекомендується</span>)</option>
+              <option value="elite">Elite — Custom</option>
+            </select>
+          </div>
+          <div class="form-g" style="margin-bottom:18px">
+            <label class="form-label"><span data-i="ru">Дополнительные опции</span><span data-i="en">Additional options</span><span data-i="ua">Додаткові опції</span></label>
+            <div class="cfg-opts">
+              <div class="cfg-opt"><input type="checkbox" id="o1" value="yubikey"><label for="o1">YubiKey 3FA</label></div>
+              <div class="cfg-opt"><input type="checkbox" id="o2" value="selfdestruct">Self-Destruct</div>
+              <div class="cfg-opt"><input type="checkbox" id="o3" value="pqvault_extra">PQVault Elite</div>
+              <div class="cfg-opt"><input type="checkbox" id="o4" value="keepass">KeePassXC</div>
+              <div class="cfg-opt"><input type="checkbox" id="o5" value="monero">Monero XMR</div>
+              <div class="cfg-opt"><input type="checkbox" id="o6" value="custom"><span data-i="ru">Кастомизация</span><span data-i="en">Custom</span><span data-i="ua">Кастомізація</span></div>
+            </div>
+          </div>
+          <div class="form-row s1">
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Нужные криптовалюты</span><span data-i="en">Needed cryptocurrencies</span><span data-i="ua">Потрібні криптовалюти</span></label>
+              <input type="text" id="wallets" class="form-input" placeholder="BTC, ETH, XMR, SOL...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery -->
+        <div class="form-sec">
+          <div class="form-sec-title"><span data-i="ru">Доставка</span><span data-i="en">Delivery</span><span data-i="ua">Доставка</span></div>
+          <div class="form-g" style="margin-bottom:18px">
+            <label class="form-label"><span data-i="ru">Способ *</span><span data-i="en">Method *</span><span data-i="ua">Спосіб *</span></label>
+            <div class="del-opts">
+              <div class="del-opt"><input type="radio" id="d1" name="del" value="nova_poshta" checked><label for="d1"><span class="del-name"><span data-i="ru">Нова Пошта</span><span data-i="en">Nova Poshta</span><span data-i="ua">Нова Пошта</span></span><span class="del-desc"><span data-i="ru">Украина · 1–3 дня</span><span data-i="en">Ukraine · 1–3 days</span><span data-i="ua">Україна · 1–3 дні</span></span></label></div>
+              <div class="del-opt"><input type="radio" id="d2" name="del" value="ukrposhta"><label for="d2"><span class="del-name"><span data-i="ru">Укрпошта</span><span data-i="en">Ukrposhta</span><span data-i="ua">Укрпошта</span></span><span class="del-desc"><span data-i="ru">Украина · 3–7 дней</span><span data-i="en">Ukraine · 3–7 days</span><span data-i="ua">Україна · 3–7 днів</span></span></label></div>
+              <div class="del-opt"><input type="radio" id="d3" name="del" value="international"><label for="d3"><span class="del-name">International</span><span class="del-desc"><span data-i="ru">Весь мир · 7–21 день</span><span data-i="en">Worldwide · 7–21 days</span><span data-i="ua">Весь світ · 7–21 день</span></span></label></div>
+              <div class="del-opt"><input type="radio" id="d4" name="del" value="pickup"><label for="d4"><span class="del-name"><span data-i="ru">Самовывоз</span><span data-i="en">Pickup</span><span data-i="ua">Самовивіз</span></span><span class="del-desc"><span data-i="ru">Киев · по договорённости</span><span data-i="en">Kyiv · by arrangement</span><span data-i="ua">Київ · за домовленістю</span></span></label></div>
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:18px">
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Страна *</span><span data-i="en">Country *</span><span data-i="ua">Країна *</span></label>
+              <select id="country" class="form-select" required>
+                <option value="" disabled selected>—</option>
+                <option value="ua"><span data-i="ru">Украина</span><span data-i="en">Ukraine</span><span data-i="ua">Україна</span></option>
+                <option value="pl"><span data-i="ru">Польша</span><span data-i="en">Poland</span><span data-i="ua">Польща</span></option>
+                <option value="de"><span data-i="ru">Германия</span><span data-i="en">Germany</span><span data-i="ua">Німеччина</span></option>
+                <option value="ee">Estonia / Eesti</option>
+                <option value="cz">Czech Republic</option>
+                <option value="other"><span data-i="ru">Другая</span><span data-i="en">Other</span><span data-i="ua">Інша</span></option>
+              </select>
+            </div>
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Город</span><span data-i="en">City</span><span data-i="ua">Місто</span></label>
+              <input type="text" id="city" class="form-input" placeholder="...">
+            </div>
+          </div>
+          <div class="form-row s1">
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Адрес / Отделение</span><span data-i="en">Address / Branch</span><span data-i="ua">Адреса / Відділення</span></label>
+              <input type="text" id="addr" class="form-input" placeholder="...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-sec">
+          <div class="form-sec-title"><span data-i="ru">Оплата</span><span data-i="en">Payment</span><span data-i="ua">Оплата</span></div>
+          <div class="form-row" style="margin-bottom:18px">
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Способ оплаты</span><span data-i="en">Payment method</span><span data-i="ua">Спосіб оплати</span></label>
+              <select id="pay" class="form-select">
+                <option value="" disabled selected>—</option>
+                <option value="btc">Bitcoin (BTC)</option>
+                <option value="eth">Ethereum (ETH)</option>
+                <option value="usdt">USDT (TRC-20 / ERC-20)</option>
+                <option value="xmr">Monero (XMR)</option>
+                <option value="card"><span data-i="ru">Карта UA (Приват / Моно)</span><span data-i="en">Card UA (Privat / Mono)</span><span data-i="ua">Карта UA (Приват / Моно)</span></option>
+                <option value="paypal">PayPal</option>
+                <option value="discuss"><span data-i="ru">Обсудить</span><span data-i="en">Discuss</span><span data-i="ua">Обговорити</span></option>
+              </select>
+            </div>
+            <div class="form-g">
+              <label class="form-label"><span data-i="ru">Бюджет (необяз.)</span><span data-i="en">Budget (opt.)</span><span data-i="ua">Бюджет (необов.)</span></label>
+              <input type="text" id="budget" class="form-input" placeholder="~$150">
+            </div>
+          </div>
+        </div>
+
+        <!-- Comment -->
+        <div class="form-sec">
+          <div class="form-sec-title"><span data-i="ru">Комментарий</span><span data-i="en">Comment</span><span data-i="ua">Коментар</span></div>
+          <div class="form-g">
+            <label class="form-label"><span data-i="ru">Пожелания / Вопросы</span><span data-i="en">Wishes / Questions</span><span data-i="ua">Побажання / Запитання</span></label>
+            <textarea id="comment" class="form-textarea" placeholder="..."></textarea>
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <div class="form-sec" style="margin-bottom:0">
+          <div class="terms-row">
+            <input type="checkbox" id="terms" class="terms-cb" required>
+            <label for="terms" class="terms-text">
+              <span data-i="ru">Я понимаю, что CybeReX — инструмент безопасности для законного использования. Соглашаюсь на обработку контактных данных исключительно для оформления заказа. Данные не передаются третьим лицам.</span>
+              <span data-i="en">I understand that CybeReX is a security tool for lawful use. I agree to processing of contact data exclusively for order processing. Data is not shared with third parties.</span>
+              <span data-i="ua">Я розумію, що CybeReX — інструмент безпеки для законного використання. Погоджуюся на обробку контактних даних виключно для оформлення замовлення.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-submit">
+          <button type="button" class="btn-submit" onclick="submitForm()">
+            <span data-i="ru"><span>Отправить заказ</span></span>
+            <span data-i="en"><span>Send Order</span></span>
+            <span data-i="ua"><span>Надіслати замовлення</span></span>
+          </button>
+          <div class="form-note">
+            <span data-i="ru">Ответ в течение 24 часов<br>Telegram · Email · WhatsApp</span>
+            <span data-i="en">Reply within 24 hours<br>Telegram · Email · WhatsApp</span>
+            <span data-i="ua">Відповідь протягом 24 годин<br>Telegram · Email · WhatsApp</span>
+          </div>
+        </div>
+
+      </div><!-- /ff -->
+
+      <div id="succ" class="form-success">
+        <div class="succ-icon">✦</div>
+        <div class="succ-title">
+          <span data-i="ru">Заказ отправлен</span>
+          <span data-i="en">Order Sent</span>
+          <span data-i="ua">Замовлення надіслано</span>
+        </div>
+        <p class="succ-text">
+          <span data-i="ru">Свяжусь с вами в течение <strong style="color:var(--gold-2)">24 часов</strong> через указанный контакт.</span>
+          <span data-i="en">I'll contact you within <strong style="color:var(--gold-2)">24 hours</strong> via the provided contact.</span>
+          <span data-i="ua">Зв'яжусь з вами протягом <strong style="color:var(--gold-2)">24 годин</strong> через вказаний контакт.</span>
+        </p>
+        <div style="margin-top:24px;font-family:var(--font-mono);font-size:9px;color:var(--gold-4);letter-spacing:2px">
+          buscosearcher@gmail.com · @buscosearcher
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTACTS
+═══════════════════════════════════════════════════════════ -->
+<section id="contacts" class="contacts-sec">
+  <div style="margin-bottom:54px" class="rv">
+    <span class="sec-label"><span data-i="ru">Контакты</span><span data-i="en">Contacts</span><span data-i="ua">Контакти</span></span>
+    <h2 class="sec-title">
+      <span data-i="ru">Свяжитесь со мной</span>
+      <span data-i="en">Get in touch</span>
+      <span data-i="ua">Зв'яжіться зі мною</span>
+    </h2>
+    <p class="body-text">
+      <span data-i="ru">Готов ответить на вопросы и обсудить любую конфигурацию</span>
+      <span data-i="en">Ready to answer questions and discuss any configuration</span>
+      <span data-i="ua">Готовий відповісти на запитання та обговорити будь-яку конфігурацію</span>
+    </p>
+  </div>
+
+  <div class="contact-cards rv">
+    <a href="mailto:buscosearcher@gmail.com" class="contact-card">
+      <div class="cc-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <span class="cc-type">Email</span>
+      <span class="cc-val">buscosearcher@gmail.com</span>
+    </a>
+    <a href="https://t.me/buscosearcher" target="_blank" class="contact-card">
+      <div class="cc-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+      </div>
+      <span class="cc-type">Telegram</span>
+      <span class="cc-val">@buscosearcher</span>
+    </a>
+    <a href="#contacts" target="_blank" class="contact-card">
+      <div class="cc-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.05 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .96h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+      </div>
+      <span class="cc-type">WhatsApp / Phone</span>
+      <span class="cc-val">——————</span>
+    </a>
+  </div>
+
+  <!-- PQVault manual download block -->
+  <div class="rv" style="margin:0 auto 40px;max-width:600px;background:var(--bg-card);border:1px solid var(--border2);padding:32px 40px">
+    <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--gold-4);margin-bottom:12px">PQVAULT DOCUMENTATION</div>
+    <p style="font-size:16px;color:var(--text-body);line-height:1.8;margin-bottom:20px">
+      <span data-i="ru">Полная инструкция к приложению PQVault by CybeReX на трёх языках: EN / UA / RU</span>
+      <span data-i="en">Full PQVault by CybeReX manual in three languages: EN / UA / RU</span>
+      <span data-i="ua">Повна інструкція до додатку PQVault by CybeReX трьома мовами: EN / UA / RU</span>
+    </p>
+    <a href="PQVault_Manual.docx" download class="btn-primary" style="display:inline-block">
+      <span><span data-i="ru">↓ Скачать инструкцию PQVault</span><span data-i="en">↓ Download PQVault Manual</span><span data-i="ua">↓ Завантажити інструкцію PQVault</span></span>
+    </a>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     OPEN SOURCE CREDITS
+═══════════════════════════════════════════════════════════ -->
+<div class="credits">
+  <div class="credits-title">
+    <span data-i="ru">Благодарность создателям Open Source алгоритмов</span>
+    <span data-i="en">Acknowledgements to Open Source Algorithm Authors</span>
+    <span data-i="ua">Подяка творцям Open Source алгоритмів</span>
+  </div>
+  <p class="credits-text">
+    <span data-i="ru">
+      CybeReX Cold Crypto Wallet и PQVault by CybeReX были бы невозможны без
+      выдающейся работы сообщества Open Source. Выражаем глубокую благодарность:
+    </span>
+    <span data-i="en">
+      CybeReX Cold Crypto Wallet and PQVault by CybeReX would not be possible without
+      the outstanding work of the Open Source community. Deep gratitude to:
+    </span>
+    <span data-i="ua">
+      CybeReX Cold Crypto Wallet та PQVault by CybeReX були б неможливі без
+      видатної роботи спільноти Open Source. Висловлюємо глибоку подяку:
+    </span>
+  </p>
+  <div class="credits-list">
+    <span class="credits-item"><strong>CRYSTALS-Kyber / ML-KEM-768</strong> — NIST PQC Team</span>
+    <span class="credits-item"><strong>Open Quantum Safe (liboqs)</strong> — OQS Project</span>
+    <span class="credits-item"><strong>AES-256-GCM</strong> — NIST / cryptography.io</span>
+    <span class="credits-item"><strong>Argon2id</strong> — Alex Biryukov, Daniel Dinu, Dmitry Khovratovich</span>
+    <span class="credits-item"><strong>Tails OS</strong> — The Tails Project</span>
+    <span class="credits-item"><strong>Tor Project</strong> — The Tor Project</span>
+    <span class="credits-item"><strong>Electrum</strong> — Thomas Voegtlin</span>
+    <span class="credits-item"><strong>Stack Wallet</strong> — Cypher Stack</span>
+    <span class="credits-item"><strong>AppArmor</strong> — Canonical / Ubuntu</span>
+    <span class="credits-item"><strong>Firejail</strong> — netblue30</span>
+    <span class="credits-item"><strong>KeePassXC</strong> — KeePassXC Team</span>
+    <span class="credits-item"><strong>USBGuard</strong> — Daniel Kopeček</span>
+    <span class="credits-item"><strong>Linux Kernel</strong> — Linus Torvalds & contributors</span>
+    <span class="credits-item"><strong>LUKS2 / cryptsetup</strong> — Milan Brož</span>
+  </div>
+  <p class="credits-text" style="margin-top:16px;font-size:13px">
+    <span data-i="ru">Весь Open Source код, применённый в CybeReX, распространяется под соответствующими лицензиями (GPL, MIT, Apache 2.0). Мы чтим и уважаем труд каждого разработчика.</span>
+    <span data-i="en">All Open Source code used in CybeReX is distributed under respective licenses (GPL, MIT, Apache 2.0). We honor and respect the work of every developer.</span>
+    <span data-i="ua">Весь Open Source код, застосований у CybeReX, поширюється під відповідними ліцензіями (GPL, MIT, Apache 2.0). Ми шануємо та поважаємо працю кожного розробника.</span>
+  </p>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-brand">CYBEREX</div>
+  <ul class="footer-links">
+    <li><a href="#product"><span data-i="ru">Продукт</span><span data-i="en">Product</span><span data-i="ua">Продукт</span></a></li>
+    <li><a href="#compare"><span data-i="ru">Сравнение</span><span data-i="en">Compare</span><span data-i="ua">Порівняння</span></a></li>
+    <li><a href="#pricing"><span data-i="ru">Цены</span><span data-i="en">Pricing</span><span data-i="ua">Ціни</span></a></li>
+    <li><a href="#order"><span data-i="ru">Заказать</span><span data-i="en">Order</span><span data-i="ua">Замовити</span></a></li>
+    <li><a href="PQVault_Manual.docx" download>PQVault Docs</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 CYBEREX · buscosearcher@gmail.com · @buscosearcher</div>
+</footer>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     JS
+═══════════════════════════════════════════════════════════ -->
+<script>
+// ── Lang switcher ──────────────────────────────────────────
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.trim().toLowerCase()===l);
+  });
+  localStorage.setItem('cx-lang',l);
+}
+(function(){
+  const s=localStorage.getItem('cx-lang');
+  if(s&&['ru','en','ua'].includes(s)) setLang(s);
+})();
+
+// ── Nav scroll ────────────────────────────────────────────
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>60);
+});
+
+// ── Reveal ────────────────────────────────────────────────
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting) setTimeout(()=>e.target.classList.add('vis'),i*70);
+  });
+},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// ── FAQ ───────────────────────────────────────────────────
+function faqToggle(btn){
+  const item=btn.closest('.faq-item');
+  const ans=item.querySelector('.faq-ans');
+  const open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f=>{
+    f.classList.remove('open');
+    f.querySelector('.faq-ans').style.maxHeight='0';
+  });
+  if(!open){item.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';}
+}
+
+// ── Smooth scroll ─────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+
+// ── Form ──────────────────────────────────────────────────
+function hl(id){
+  const el=document.getElementById(id);
+  el.style.borderColor='var(--gold-2)';
+  el.style.boxShadow='0 0 0 1px var(--gold-3)';
+  el.focus();
+  setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},3000);
+}
+
+function submitForm(){
+  const fname=document.getElementById('fname').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pkg=document.getElementById('pkg').value;
+  const terms=document.getElementById('terms').checked;
+
+  if(!fname){hl('fname');return;}
+  if(!email||!email.includes('@')){hl('email');return;}
+  if(!pkg){hl('pkg');return;}
+  if(!terms){document.getElementById('terms').style.outline='1px solid var(--gold-3)';return;}
+
+  const opts=[...document.querySelectorAll('input[type=checkbox]:not(#terms):checked')].map(c=>c.value).join(', ')||'none';
+  const del=document.querySelector('input[name=del]:checked')?.value||'';
+
+  // Disable button, show spinner
+  const btn=document.querySelector('.btn-submit');
+  const btnSpan=btn.querySelector('span');
+  btn.disabled=true;
+  btnSpan.textContent='...';
+
+  const payload={
+    _subject: `CybeReX Order · ${pkg} · ${fname}`,
+    name:     `${fname} ${document.getElementById('lname').value}`.trim(),
+    email:    email,
+    telegram: document.getElementById('tg').value||'—',
+    phone:    document.getElementById('phone').value||'—',
+    package:  pkg,
+    options:  opts,
+    wallets:  document.getElementById('wallets').value||'—',
+    delivery: del,
+    country:  document.getElementById('country').value||'—',
+    city:     document.getElementById('city').value||'—',
+    address:  document.getElementById('addr').value||'—',
+    payment:  document.getElementById('pay').value||'—',
+    budget:   document.getElementById('budget').value||'—',
+    comment:  document.getElementById('comment').value||'—',
+  };
+
+  fetch('https://formspree.io/f/mlgaaoyj', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    if(data.ok || data.next){
+      document.getElementById('ff').style.display='none';
+      document.getElementById('succ').classList.add('vis');
+    } else {
+      btn.disabled=false;
+      btnSpan.textContent='Отправить заказ';
+      alert('Ошибка отправки. Напишите напрямую: buscosearcher@gmail.com');
+    }
+  })
+  .catch(()=>{
+    btn.disabled=false;
+    btnSpan.textContent='Отправить заказ';
+    alert('Ошибка сети. Напишите напрямую: buscosearcher@gmail.com');
+  });
+}
+</script>
+
+</body>
+</html>

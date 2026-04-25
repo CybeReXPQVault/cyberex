@@ -1977,14 +1977,14 @@ function submitForm(){
     comment:  document.getElementById('comment').value||'—',
   };
 
-  fetch('https://formspree.io/f/mlgaaoyj', {
+  fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: {'Content-Type':'application/json','Accept':'application/json'},
-    body: JSON.stringify(payload)
+    body: JSON.stringify({access_key:'9735ca7c-19e1-48d7-b76d-367658282a08', ...payload})
   })
   .then(r => r.json())
   .then(data => {
-    if(data.ok || data.next){
+    if(data.success){
       document.getElementById('ff').style.display='none';
       document.getElementById('succ').classList.add('vis');
     } else {

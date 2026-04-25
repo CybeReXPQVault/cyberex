@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /CNAME
+
+Sitemap: https://cyberexpqvault.pp.ua/sitemap.xml
+
+# CybeReX Cold Crypto Wallet — cyberexpqvault.pp.ua

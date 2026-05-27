@@ -202,9 +202,9 @@
   --bg-card2:#111827;
   --border:rgba(232,201,122,.18);
   --border2:rgba(232,201,122,.08);
-  --text-body:#a09070;
+  --text-body:#b7a783;
   --text-light:#d4c5a0;
-  --text-dim:#6a5e44;
+  --text-dim:#9b8868;
   --font-display:'Cinzel',serif;
   --font-body:'Cormorant Garamond',serif;
   --font-mono:'JetBrains Mono',monospace;
@@ -215,7 +215,7 @@ body{
   min-height:100vh;
   color:var(--text-body);
   font-family:var(--font-body);
-  font-size:18px;
+  font-size:19px;
   line-height:1.7;
   overflow-x:hidden;
 }
@@ -438,7 +438,7 @@ h3.sub-title{
   font-family:var(--font-display);font-size:18px;letter-spacing:2px;
   color:var(--gold-2);margin-bottom:12px;
 }
-.body-text{font-size:18px;line-height:1.9;color:var(--text-body);margin-bottom:18px}
+.body-text{font-size:20px;line-height:1.9;color:var(--text-body);margin-bottom:18px}
 .body-text strong{color:var(--gold-2);font-weight:600}
 
 /* reveal */
@@ -449,9 +449,30 @@ h3.sub-title{
    PRODUCT SECTION — 2 col
 ═══════════════════════════════════════════════════════════ */
 .product-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:start;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  column-gap:80px;
+  row-gap:34px;
+  align-items:start;
+  position:relative;
+}
+.product-grid,.product-side,.product-use-col,.product-layers-col,.product-logo-col,.q-box,.vault-card,.layers-table{
+  min-width:0;
+}
+.product-side,.product-use-col,.product-layers-col,.product-logo-col,.q-box,.vault-card,.layers-table td{
+  overflow-wrap:break-word;
 }
 .pq-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.product-side > .sec-label,
+.product-use-col > .sec-label,
+.product-side > .sec-title,
+.product-use-col > .sec-title{
+  display:block;
+  text-align:center;
+}
+.product-side > .pq-badge-row{
+  justify-content:center;
+}
 .pq-badge{
   font-family:var(--font-mono);font-size:9px;letter-spacing:2px;
   border:1px solid var(--gold-4);color:var(--gold-3);
@@ -466,12 +487,20 @@ h3.sub-title{
 .q-box-title{
   font-family:var(--font-display);font-size:14px;letter-spacing:3px;
   color:var(--gold-2);margin-bottom:10px;text-transform:uppercase;
+  overflow-wrap:break-word;
 }
-.q-box p{font-size:16px;color:var(--text-body);line-height:1.8}
+.q-box p{font-size:18px;color:var(--text-body);line-height:1.85}
 .q-box strong{color:var(--gold-1)}
+.product-side > .q-box{margin-bottom:0}
 
 /* crypto layers table */
-.layers-table{width:100%;border-collapse:collapse;margin:28px 0}
+.layers-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:0;
+  border:1px solid var(--border2);
+  background:rgba(11,18,37,.25);
+}
 .layers-table th{
   font-family:var(--font-mono);font-size:9px;letter-spacing:3px;
   color:var(--gold-4);text-transform:uppercase;
@@ -479,12 +508,12 @@ h3.sub-title{
 }
 .layers-table td{
   padding:14px 16px;border-bottom:1px solid var(--border2);
-  font-size:15px;vertical-align:top;
+  font-size:17px;vertical-align:top;
 }
 .layers-table tr:last-child td{border-bottom:none}
-.layers-table .algo{font-family:var(--font-mono);color:var(--gold-3);font-size:13px}
-.layers-table .role{color:var(--gold-2);font-weight:600;font-size:14px}
-.layers-table .desc{color:var(--text-dim);font-size:14px}
+.layers-table .algo{font-family:var(--font-mono);color:var(--gold-3);font-size:14px}
+.layers-table .role{color:var(--gold-2);font-weight:600;font-size:16px}
+.layers-table .desc{color:var(--text-dim);font-size:17px}
 .layers-table tr:nth-child(odd) td{background:rgba(11,18,37,.4)}
 .layers-table tr:nth-child(even) td{background:rgba(13,20,40,.3)}
 
@@ -497,25 +526,171 @@ h3.sub-title{
 .vault-card:hover{border-color:var(--gold-4)}
 .vault-card-icon{font-size:22px;margin-bottom:8px;display:block}
 .vault-card h4{
-  font-family:var(--font-display);font-size:13px;letter-spacing:2px;
+  font-family:var(--font-display);font-size:15px;letter-spacing:2px;
   color:var(--gold-2);margin-bottom:6px;
 }
-.vault-card p{font-size:13px;color:var(--text-dim);line-height:1.6}
-.product-side{position:sticky;top:128px}
+.vault-card p{font-size:16px;color:var(--text-dim);line-height:1.7}
+.product-side{position:relative}
+.product-layers-col{
+  margin-top:0;
+}
+.product-use-col{
+  display:flex;
+  flex-direction:column;
+}
+.product-logo-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  margin-top:0;
+}
 .product-brand-mark{
-  margin-top:34px;
-  min-height:520px;
+  margin:28px 0 0;
+  padding:0;
+  min-height:0;
   display:flex;
   align-items:center;
   justify-content:center;
   position:relative;
   overflow:hidden;
+  border:0;
+  background:transparent;
+  width:100%;
 }
 .product-brand-mark img{
-  width:min(700px,126%);
+  width:min(580px,96%);
+  max-height:330px;
   height:auto;
-  opacity:.86;
+  opacity:.9;
   filter:none;
+}
+.product-manual-link{
+  display:flex !important;
+  width:max-content;
+  max-width:100%;
+  margin:18px auto 0 !important;
+  justify-content:center;
+  text-align:center;
+  font-size:11px !important;
+}
+.product-preview-strip{
+  width:100%;
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:1fr;
+  justify-items:center;
+  gap:6px;
+  max-width:180px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.product-preview-thumb{
+  display:block;
+  position:relative;
+  width:100%;
+  aspect-ratio:1024/610;
+  border:1px solid var(--border2);
+  background:rgba(11,18,37,.7);
+  padding:0;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .25s,transform .25s,box-shadow .25s;
+}
+.product-preview-thumb:hover,
+.product-preview-thumb:focus-visible{
+  border-color:var(--gold-3);
+  transform:translateY(-2px);
+  box-shadow:0 16px 40px rgba(0,0,0,.35);
+  outline:none;
+}
+.product-preview-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:top center;
+  display:block;
+  opacity:.86;
+}
+.product-preview-thumb span{
+  position:absolute;
+  left:10px;
+  bottom:9px;
+  right:10px;
+  font-family:var(--font-mono);
+  font-size:9px;
+  letter-spacing:2px;
+  color:var(--gold-1);
+  text-transform:uppercase;
+  text-shadow:0 2px 12px rgba(0,0,0,.95);
+}
+.preview-lightbox{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(8px);
+}
+.preview-lightbox.open{display:flex}
+.preview-lightbox-inner{
+  width:min(1180px,96vw);
+  max-height:90vh;
+  border:1px solid var(--gold-4);
+  background:#05070d;
+  box-shadow:0 24px 90px rgba(0,0,0,.65);
+  position:relative;
+  padding:18px;
+}
+.preview-lightbox img{
+  display:block;
+  width:100%;
+  max-height:78vh;
+  object-fit:contain;
+  background:#060914;
+  cursor:pointer;
+}
+.preview-lightbox-close{
+  position:absolute;
+  top:-14px;
+  right:-14px;
+  width:40px;
+  height:40px;
+  border:1px solid var(--gold-3);
+  background:#060914;
+  color:var(--gold-1);
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+}
+
+@media(min-width:901px){
+  .product-grid::before{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:50%;
+    width:1px;
+    background:linear-gradient(to bottom, transparent, var(--border2) 5%, var(--border2) 95%, transparent);
+    pointer-events:none;
+  }
+  .product-side{grid-column:1;grid-row:1}
+  .product-use-col{grid-column:2;grid-row:1}
+  .product-layers-col{grid-column:1;grid-row:2}
+  .product-logo-col{grid-column:2;grid-row:2}
+  .product-layers-col,
+  .product-logo-col{
+    border-top:1px solid var(--border2);
+    padding-top:28px;
+  }
+  .product-logo-col .q-box{
+    width:100%;
+    margin:0;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -540,10 +715,10 @@ h3.sub-title{
   width:44px;height:44px;margin-bottom:20px;color:var(--gold-3);
 }
 .feat-card h3{
-  font-family:var(--font-display);font-size:16px;letter-spacing:2px;
+  font-family:var(--font-display);font-size:18px;letter-spacing:2px;
   color:var(--gold-2);margin-bottom:12px;
 }
-.feat-card p{font-size:15px;line-height:1.75;color:var(--text-dim)}
+.feat-card p{font-size:18px;line-height:1.85;color:var(--text-dim)}
 .feat-tag{
   display:inline-block;margin-top:14px;
   font-family:var(--font-mono);font-size:8px;letter-spacing:2px;
@@ -568,16 +743,16 @@ h3.sub-title{
 }
 .cmp-table td{
   padding:14px 20px;border-bottom:1px solid var(--border2);
-  font-size:15px;vertical-align:middle;
+  font-size:17px;vertical-align:middle;
 }
 .cmp-table tr:last-child td{border-bottom:none}
 .cmp-table td:first-child{
-  font-family:var(--font-body);font-size:16px;color:var(--text-light);
+  font-family:var(--font-body);font-size:18px;color:var(--text-light);
 }
 .cmp-table .cyberex-col{background:rgba(232,201,122,.025)}
 .cmp-yes{color:#4ade80;font-size:17px}
 .cmp-no{color:#f87171;font-size:17px}
-.cmp-partial{color:var(--gold-3);font-size:13px}
+.cmp-partial{color:var(--gold-3);font-size:15px}
 .cmp-cyberex-label{
   font-family:var(--font-display);font-size:13px;letter-spacing:3px;
   color:var(--gold-2);
@@ -611,7 +786,7 @@ h3.sub-title{
   font-family:var(--font-display);font-size:18px;letter-spacing:2px;
   color:var(--gold-2);margin-bottom:8px;
 }
-.step-body p{font-size:16px;color:var(--text-dim);line-height:1.8}
+.step-body p{font-size:18px;color:var(--text-dim);line-height:1.85}
 
 /* ══════════════════════════════════════════════════════════
    SPECS
@@ -634,7 +809,7 @@ h3.sub-title{
 }
 .spec-row:last-child{border-bottom:none}
 .spec-label{font-family:var(--font-mono);font-size:13px;color:var(--gold-4);flex-shrink:0}
-.spec-value{font-family:var(--font-body);font-size:16px;color:var(--text-light);text-align:right}
+.spec-value{font-family:var(--font-body);font-size:18px;color:var(--text-light);text-align:right}
 .spec-badge{
   display:inline-block;
   background:rgba(232,201,122,.07);border:1px solid var(--gold-5);
@@ -681,7 +856,7 @@ html[data-lang="ua"] .price-card.featured::before{content:'ПОПУЛЯРНИЙ'
 }
 .price-feats{list-style:none;margin-bottom:32px}
 .price-feats li{
-  font-size:14px;color:var(--text-dim);padding:7px 0;
+  font-size:17px;color:var(--text-dim);padding:9px 0;
   border-bottom:1px solid var(--border2);
   display:flex;align-items:center;gap:8px;
 }
@@ -698,11 +873,11 @@ html[data-lang="ua"] .price-card.featured::before{content:'ПОПУЛЯРНИЙ'
   text-align:left;cursor:pointer;
   display:flex;justify-content:space-between;align-items:center;gap:16px;
 }
-.faq-qt{font-family:var(--font-body);font-size:19px;color:var(--gold-2)}
+.faq-qt{font-family:var(--font-body);font-size:21px;color:var(--gold-2)}
 .faq-ico{width:22px;height:22px;flex-shrink:0;color:var(--gold-4);transition:transform .3s}
 .faq-item.open .faq-ico{transform:rotate(45deg)}
 .faq-ans{max-height:0;overflow:hidden;transition:max-height .4s ease}
-.faq-ans-in{padding:0 0 26px;font-size:17px;color:var(--text-body);line-height:1.85}
+.faq-ans-in{padding:0 0 26px;font-size:19px;color:var(--text-body);line-height:1.9}
 .faq-ans-in strong{color:var(--gold-2)}
 
 /* ══════════════════════════════════════════════════════════
@@ -780,7 +955,7 @@ html[data-lang="ua"] .price-card.featured::before{content:'ПОПУЛЯРНИЙ'
   content:'✓';position:absolute;inset:0;display:flex;
   align-items:center;justify-content:center;color:var(--bg-0);font-size:12px;font-weight:700;
 }
-.terms-text{font-size:14px;color:var(--text-dim);line-height:1.6}
+.terms-text{font-size:16px;color:var(--text-dim);line-height:1.65}
 .form-submit{margin-top:36px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .btn-submit{
   font-family:var(--font-mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;
@@ -801,7 +976,7 @@ html[data-lang="ua"] .price-card.featured::before{content:'ПОПУЛЯРНИЙ'
   margin:0 auto 28px;font-size:28px;color:var(--gold-2);
 }
 .succ-title{font-family:var(--font-display);font-size:26px;color:var(--gold-2);margin-bottom:14px}
-.succ-text{font-size:17px;color:var(--text-body);max-width:460px;margin:0 auto;line-height:1.8}
+.succ-text{font-size:19px;color:var(--text-body);max-width:520px;margin:0 auto;line-height:1.85}
 
 /* ══════════════════════════════════════════════════════════
    CONTACTS
@@ -844,7 +1019,7 @@ html[data-lang="ua"] .price-card.featured::before{content:'ПОПУЛЯРНИЙ'
   font-family:var(--font-display);font-size:16px;letter-spacing:4px;
   color:var(--gold-4);margin-bottom:20px;text-transform:uppercase;
 }
-.credits-text{font-size:15px;color:var(--text-dim);line-height:1.9}
+.credits-text{font-size:17px;color:var(--text-dim);line-height:1.9}
 .credits-text strong{color:var(--gold-3)}
 .credits-list{
   display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px;
@@ -913,10 +1088,10 @@ footer{
 .pain-card:hover{border-color:var(--gold-4);transform:translateY(-3px)}
 .pain-icon{font-size:36px;margin-bottom:16px;display:block;line-height:1}
 .pain-title{
-  font-family:var(--font-display);font-size:17px;letter-spacing:1px;
+  font-family:var(--font-display);font-size:19px;letter-spacing:1px;
   color:var(--gold-2);margin-bottom:14px;
 }
-.pain-text{font-size:15px;line-height:1.8;color:var(--text-body);margin-bottom:18px}
+.pain-text{font-size:18px;line-height:1.85;color:var(--text-body);margin-bottom:18px}
 .pain-text strong{color:#e07070}
 .pain-solution{
   font-family:var(--font-mono);font-size:10px;letter-spacing:1px;
@@ -948,7 +1123,7 @@ footer{
 }
 .review-text{
   font-family:var(--font-body);font-style:italic;
-  font-size:16px;line-height:1.85;color:var(--text-body);margin-bottom:22px;
+  font-size:18px;line-height:1.9;color:var(--text-body);margin-bottom:22px;
 }
 .review-author{display:flex;align-items:center;gap:12px}
 .review-avatar{
@@ -983,7 +1158,7 @@ footer{
 @media(max-width:900px){
   nav{padding:14px 20px}
   .nav-links{display:none}
-  .product-grid{grid-template-columns:1fr;gap:50px}
+  .product-grid{grid-template-columns:1fr;gap:42px}
   .features-grid{grid-template-columns:1fr}
   .specs-grid{grid-template-columns:1fr}
   .price-grid{grid-template-columns:1fr;max-width:420px}
@@ -997,7 +1172,7 @@ footer{
   footer{flex-direction:column;text-align:center;padding:36px 20px;gap:20px}
   .footer-links{flex-wrap:wrap;justify-content:center;gap:16px}
   .vault-cards{grid-template-columns:1fr}
-  .cmp-table th,.cmp-table td{padding:8px 10px;font-size:12px}
+  .cmp-table th,.cmp-table td{padding:10px 12px;font-size:15px}
   .pain-grid{grid-template-columns:1fr}
   .reviews-grid{grid-template-columns:1fr}
   .trust-badges{gap:20px;padding:24px}
@@ -1010,17 +1185,21 @@ footer{
   .hero-title{letter-spacing:10px}
   .hero-btns{flex-direction:column;align-items:center}
   .hero-btns .btn-primary,.hero-btns .btn-outline{width:100%;max-width:320px;text-align:center}
-  .urgency-bar{font-size:9px;padding:9px 12px}
+  .urgency-bar{font-size:10px;padding:9px 12px}
   .pain-card{padding:26px 20px}
   .review-card{padding:24px 20px}
   .step{grid-template-columns:44px 1fr;gap:16px}
   h2.sec-title{font-size:clamp(22px,6vw,36px)}
   .spec-group{padding:24px 18px}
-  .spec-label{font-size:10px}
-  .spec-value{font-size:13px}
-  .product-side{position:static}
-  .product-brand-mark{min-height:340px;margin-top:22px}
-  .product-brand-mark img{width:min(560px,120%)}
+  .spec-label{font-size:11px}
+  .spec-value{font-size:16px}
+  .product-side{position:relative}
+  .product-brand-mark{min-height:0;margin-top:28px;padding:24px 0 8px}
+  .product-brand-mark img{width:min(430px,86%);max-height:230px}
+  .product-preview-strip{grid-template-columns:1fr;max-width:280px;margin:24px auto 0}
+  .preview-lightbox{padding:14px}
+  .preview-lightbox-inner{padding:10px}
+  .preview-lightbox-close{top:8px;right:8px}
   .order-wrap{padding:0}
   .form-sec-title{font-size:9px}
   .price-grid{background:transparent;gap:12px}
@@ -1034,7 +1213,7 @@ footer{
   .nav-cta{padding:8px 14px;font-size:9px}
   .hero-title{font-size:clamp(42px,12vw,72px);letter-spacing:6px}
   .hero-slogan{font-size:13px;letter-spacing:4px}
-  body{font-size:16px}
+  body{font-size:18px}
   .sec{padding:56px 14px}
   .specs-inner{padding:56px 14px}
   .contacts-sec{padding:56px 14px}
@@ -1043,6 +1222,13 @@ footer{
   .btn-submit{padding:16px 28px;font-size:10px}
   .hero-stat-n{font-size:26px}
   .price-amt{font-size:40px}
+  .body-text{font-size:19px}
+  .q-box{padding:22px 18px}
+  .q-box-title{font-size:12px;letter-spacing:2px}
+  .layers-table th,.layers-table td{padding:11px 9px}
+  .q-box p,.feat-card p,.pain-text,.review-text,.faq-ans-in{font-size:18px}
+  .price-feats li{font-size:16px}
+  .vault-card p{font-size:15px}
   footer{padding:28px 14px}
 }
 </style>
@@ -1513,6 +1699,9 @@ footer{
         </p>
       </div>
 
+    </div>
+
+    <div class="product-layers-col">
       <!-- 3-layer table -->
       <table class="layers-table">
         <tr>
@@ -1557,16 +1746,10 @@ footer{
         </tr>
       </table>
 
-      <!-- PQVault download button -->
-      <a href="PQVault_Manual.docx" download class="btn-outline" style="display:inline-block;margin-top:24px;font-size:10px">
-        <span data-i="ru">↓ Скачать инструкцию PQVault (DOCX)</span>
-        <span data-i="en">↓ Download PQVault Manual (DOCX)</span>
-        <span data-i="ua">↓ Завантажити інструкцію PQVault (DOCX)</span>
-      </a>
     </div>
 
     <!-- RIGHT: vault use cases -->
-    <div>
+    <div class="product-use-col">
       <span class="sec-label"><span data-i="ru">Что хранить</span><span data-i="en">What to store</span><span data-i="ua">Що зберігати</span></span>
       <h2 class="sec-title" style="font-size:clamp(22px,3vw,36px)">
         <span data-i="ru">Хранилище для<br>любых данных</span>
@@ -1618,7 +1801,10 @@ footer{
         </div>
       </div>
 
-      <div class="q-box" style="margin-top:24px;border-left-color:var(--gold-4)">
+    </div>
+
+    <div class="product-logo-col">
+      <div class="q-box" style="border-left-color:var(--gold-4)">
         <div class="q-box-title" style="font-size:12px">
           <span data-i="ru">Несколько независимых хранилищ</span>
           <span data-i="en">Multiple Independent Vaults</span>
@@ -1635,11 +1821,40 @@ footer{
         <img src="cyberex-brand-dissolve.svg" alt="">
       </div>
 
+      <!-- PQVault download button -->
+      <a href="PQVault_Manual.docx" download class="btn-outline product-manual-link" style="font-size:10px">
+        <span data-i="ru">↓ Скачать инструкцию PQVault (DOCX)</span>
+        <span data-i="en">↓ Download PQVault Manual (DOCX)</span>
+        <span data-i="ua">↓ Завантажити інструкцію PQVault (DOCX)</span>
+      </a>
+
+      <div class="product-preview-strip" aria-label="PQVault interface preview">
+        <button class="product-preview-thumb" type="button" data-preview="media/pqvault-create.png" data-title="Create">
+          <img src="media/pqvault-create.png" alt="PQVault Create tab preview" loading="lazy">
+          <span>Create</span>
+        </button>
+        <button class="product-preview-thumb" type="button" data-preview="media/pqvault-open.png" data-title="Open">
+          <img src="media/pqvault-open.png" alt="PQVault Open tab preview" loading="lazy">
+          <span>Open</span>
+        </button>
+        <button class="product-preview-thumb" type="button" data-preview="media/pqvault-tools.png" data-title="Tools">
+          <img src="media/pqvault-tools.png" alt="PQVault Tools tab preview" loading="lazy">
+          <span>Tools</span>
+        </button>
+      </div>
+
     </div>
   </div>
 </section>
 
 <div class="gold-line"></div>
+
+<div class="preview-lightbox" id="preview-lightbox" aria-hidden="true">
+  <div class="preview-lightbox-inner" role="dialog" aria-modal="true" aria-label="PQVault interface preview">
+    <button class="preview-lightbox-close" type="button" aria-label="Close preview">×</button>
+    <img id="preview-lightbox-img" src="" alt="">
+  </div>
+</div>
 
 
 <!-- ══════════════════════════════════════════════════════════
@@ -2100,7 +2315,7 @@ footer{
     </div>
   </div>
 
-  <p style="margin-top:24px;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px">
+  <p style="margin-top:24px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);letter-spacing:2px">
     <span data-i="ru">Цены указаны от — итоговая стоимость зависит от конфигурации и региона доставки</span>
     <span data-i="en">Prices from — final cost depends on configuration and delivery region</span>
     <span data-i="ua">Ціни від — підсумкова вартість залежить від конфігурації та регіону доставки</span>
@@ -2453,7 +2668,7 @@ footer{
   <!-- PQVault manual download block -->
   <div class="rv" style="margin:0 auto 40px;max-width:600px;background:var(--bg-card);border:1px solid var(--border2);padding:32px 40px">
     <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--gold-4);margin-bottom:12px">PQVAULT DOCUMENTATION</div>
-    <p style="font-size:16px;color:var(--text-body);line-height:1.8;margin-bottom:20px">
+    <p style="font-size:18px;color:var(--text-body);line-height:1.85;margin-bottom:20px">
       <span data-i="ru">Полная инструкция к приложению PQVault by CybeReX на трёх языках: EN / UA / RU</span>
       <span data-i="en">Full PQVault by CybeReX manual in three languages: EN / UA / RU</span>
       <span data-i="ua">Повна інструкція до додатку PQVault by CybeReX трьома мовами: EN / UA / RU</span>
@@ -2509,7 +2724,7 @@ footer{
     <span class="credits-item"><strong>Linux Kernel</strong> — Linus Torvalds & contributors</span>
     <span class="credits-item"><strong>LUKS2 / cryptsetup</strong> — Milan Brož</span>
   </div>
-  <p class="credits-text" style="margin-top:16px;font-size:13px">
+  <p class="credits-text" style="margin-top:16px;font-size:16px">
     <span data-i="ru">Весь Open Source код, применённый в CybeReX, распространяется под соответствующими лицензиями (GPL, MIT, Apache 2.0). Мы чтим и уважаем труд каждого разработчика.</span>
     <span data-i="en">All Open Source code used in CybeReX is distributed under respective licenses (GPL, MIT, Apache 2.0). We honor and respect the work of every developer.</span>
     <span data-i="ua">Весь Open Source код, застосований у CybeReX, поширюється під відповідними ліцензіями (GPL, MIT, Apache 2.0). Ми шануємо та поважаємо працю кожного розробника.</span>
@@ -2594,6 +2809,33 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
     if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
   });
 });
+
+// ── Product preview lightbox ───────────────────────────────
+(function(){
+  const box=document.getElementById('preview-lightbox');
+  const img=document.getElementById('preview-lightbox-img');
+  if(!box||!img) return;
+  const close=box.querySelector('.preview-lightbox-close');
+  function closePreview(){
+    box.classList.remove('open');
+    box.setAttribute('aria-hidden','true');
+    img.removeAttribute('src');
+    img.removeAttribute('alt');
+  }
+  document.querySelectorAll('.product-preview-thumb').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      img.src=btn.dataset.preview;
+      img.alt=btn.querySelector('img')?.alt || 'PQVault interface preview';
+      box.classList.add('open');
+      box.setAttribute('aria-hidden','false');
+      close?.focus();
+    });
+  });
+  close?.addEventListener('click',closePreview);
+  img.addEventListener('click',closePreview);
+  box.addEventListener('click',e=>{ if(e.target===box) closePreview(); });
+  window.addEventListener('keydown',e=>{ if(e.key==='Escape'&&box.classList.contains('open')) closePreview(); });
+})();
 
 // ── Form ──────────────────────────────────────────────────
 function hl(id){

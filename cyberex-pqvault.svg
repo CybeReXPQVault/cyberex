@@ -1,0 +1,43 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="72%">
+      <stop offset="0%" stop-color="#101421"/>
+      <stop offset="100%" stop-color="#05070d"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8C97A"/>
+      <stop offset="45%" stop-color="#F0D98A"/>
+      <stop offset="100%" stop-color="#9A7230"/>
+    </linearGradient>
+    <linearGradient id="key-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0D98A"/>
+      <stop offset="40%" stop-color="#E8C97A"/>
+      <stop offset="100%" stop-color="#9A7230"/>
+    </linearGradient>
+    <linearGradient id="shield-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#181818"/>
+      <stop offset="100%" stop-color="#0C0C0C"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="256" height="256" rx="42" fill="url(#bg)"/>
+  <path d="M128 28 L196 54 L196 136 Q196 199 128 229 Q60 199 60 136 L60 54 Z"
+        fill="url(#shield-bg)" stroke="url(#gold)" stroke-width="5" filter="url(#glow)"/>
+  <path d="M128 43 L181 65 L181 136 Q181 188 128 213 Q75 188 75 136 L75 65 Z"
+        fill="none" stroke="url(#gold)" stroke-width="1.8" opacity="0.42"/>
+  <path d="M104 124 L104 101 Q104 77 128 77 Q152 77 152 101 L152 124"
+        fill="none" stroke="url(#key-grad)" stroke-width="13" stroke-linecap="round"/>
+  <rect x="91" y="121" width="74" height="62" rx="10"
+        fill="none" stroke="url(#key-grad)" stroke-width="10"/>
+  <circle cx="128" cy="146" r="9"
+          fill="none" stroke="url(#key-grad)" stroke-width="6"/>
+  <line x1="128" y1="157" x2="128" y2="174"
+        stroke="url(#key-grad)" stroke-width="7" stroke-linecap="round"/>
+</svg>
